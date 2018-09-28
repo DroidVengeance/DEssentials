@@ -1,0 +1,1963 @@
+#EssentialsSkript
+#Remastered by:
+#DroidVengeance
+
+
+Originally by: TheBaconGamer
+
+options:
+
+	name: &8[&6&lES&8]
+
+	cooldown : 500 seconds #For /report
+
+	rocketlength: 7
+	
+	firstjoinmessage: "&2&lWelcome to the server %player%" #You can change this <3
+	
+	Censored: No No Word
+	
+	spamcooldown: 4
+
+	
+variables: #Variables do not touch most of these only the ones where it says
+
+	{plugins.on} = "false"
+
+	{firstjoin.message} = true
+
+	{mail.on} = true
+
+	{god.enabled.%player%} = 0
+
+	{antibuild} = false
+	
+	
+#Punishment stuff <------------------#
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^#
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^#
+command /mute <player>:
+	permission: EssSk.mute
+	trigger:
+		set {EssSk.muted.%argument 1%} to true
+		message "&6You have been silenced!" to arg 1
+		stop
+		
+command /unmute <player>:
+	permission: EssSk.unmute
+	trigger:
+		set {EssSk.muted.%argument 1%} to false
+		message "&6You have been unsilenced!" to arg 1
+		stop
+		
+on chat:
+	if {EssSk.muted.%player%} is true:
+		cancel event
+		message "&6You have been silenced!"
+		stop
+		
+command /ban [<Offlineplayer>] [<Text>]:
+	permission: EssSk.ban
+	trigger:
+		if player has permission "EssSk.ban":
+			if arg 1 is set:
+				if arg 2 is set:
+					set {banned.%arg 1%} to true
+					set {ban.time.%arg 1%} to now
+					set {ban.reason.%arg 1%} to argument-2
+					set {ban.expire.%arg 1%} to "Never"
+					set {ban.bannedby.%arg 1%} to player
+					set {BanIP.%arg 1%} to "False"
+					kick arg 1 due to "&7Banned for &c%arg 2% &7by &c%player%"
+					ban arg 1 due to "&7Banned for &c%arg 2% &7by &c%player%"
+					loop all players:
+						loop-player has permission "oi"
+						send "&7[%{essPrefix}%&7] &c%player% &7banned &c%arg 1% &7Reason: &c%arg 2%" to loop-player
+				else:
+					send "&7[%{essPrefix}%&7] &c/Ban <Player> <Reason>"
+			else:
+				send "&7[%{essPrefix}%&7] &c/Ban <Player> <Reason>"
+		else:
+			send "&7[%{essPrefix}%&7] &cNo permission"
+			stop
+
+command /banip [<Offlineplayer>] [<Text>]:
+	permission: EssSk.banip
+	trigger:
+		if player has permission "EssSk.banip":
+			if arg 1 is set:
+				if arg 2 is set:
+					set {banned.%arg 1%} to true
+					set {ban.time.%arg 1%} to now
+					set {ban.reason.%arg 1%} to argument-2
+					set {ban.expire.%arg 1%} to "Never"
+					set {ban.bannedby.%arg 1%} to player
+					set {IP.%arg 1%} to ip of arg 1
+					set {BanIP.%arg 1%} to "True"
+					kick arg 1 due to "&7IP-Banned for &c%arg 2% &7by &c%player%"
+					ban arg 1 due to "&7IP-Banned for &c%arg 2% &7by &c%player%"
+					ban ip of arg 1 due to "&7IP-Banned for &c%arg 2% &7by &c%player%"
+					loop all players:
+						loop-player has permission "{EssSk.notify}"
+						send "&7[%{essPrefix}%&7] &c%player% &7ip-banned &c%arg 1% &7Reason: &c%arg 2%" to loop-player
+				else:
+					send "&7[%{essPrefix}%&7] &c/Banip <Player> <Reason>"
+			else:
+				send "&7[%{essPrefix}%&7] &c/Banip <Player> <Reason>"
+		else:
+			send "&7[%{essPrefix}%&7] &cNo permission"
+			stop
+
+command /tempban [<Offlineplayer>] [<Text>] [<Timespan>]:
+	permission: EssSk.tempban
+	trigger:
+		if player has permission "EssSk.tempban":
+			if arg 1 is set:
+				if arg 2 is set:
+					if arg 3 is set:
+						set {banned.%arg 1%} to true
+						set {ban.time.%arg 1%} to now
+						set {ban.reason.%arg 1%} to argument-2
+						set {ban.expire.%arg 1%} to now
+						add arg-3 to {ban.expire.%arg 1%}
+						set {_Unbantime} to difference between {ban.expire.%arg 1%} and now
+						set {ban.bannedby.%arg 1%} to player
+						kick arg 1 due to "&7Temp-Banned for &c%arg 3% &7for &c%arg 2% &7by &c%player% &7- &7Will be unbanned &c{ban.expire.%arg 1%} EST"
+						ban arg 1 due to "&7Temp-Banned for &c%arg 3% &7for &c%arg 2% &7by &c%player% &7- &7Will be unbanned &c{ban.expire.%arg 1%} EST"
+						loop all players:
+							loop-player has permission "{EssSk.notify}"
+							send "&7[%{essPrefix}%&7] &c%player% &7tempbanned &c%arg 1% &7for &c%arg 3% &7Reason: &c%arg 2%" to loop-player
+						wait {_Unbantime}
+						unban arg-1
+					else:
+						send "&7[%{essPrefix}%&7] &c/Tempban <Player> <Reason> <Timespan>"
+				else:
+					send "&7[%{essPrefix}%&7] &c/Tempban <Player> <Reason> <Timespan>"
+			else:
+				send "&7[%{essPrefix}%&7] &c/Tempban <Player> <Reason> <Timespan>"
+		else:
+			send "&7[%{essPrefix}%&7] &cNo permission"
+			stop
+
+command /unban [<offlineplayer>]:
+	permission: EssSk.unban
+	trigger:
+		if player has permission "EssSk.unban":
+			if arg 1 is set:
+				if {banned.%arg 1%} is true:
+					unban arg-1
+					unban ip of arg 1
+					set {banned.%arg 1%} to false
+					loop all players:
+						loop-player has permission "EssSk.notify"
+						send "&7[%{essPrefix}%&7] &c%player% &7unbanned &c%arg 1%" to loop-player
+				else:
+					send "&7[%{essPrefix}%&7] &cThis player isn't banned"
+			else:
+				send "&7[%{essPrefix}%&7] &c/Unban <Player>"
+		else:
+			send "&7[%{essPrefix}%&7] &cNo permission"
+			stop
+
+command /kick [<Offlineplayer>] [<Text>]:
+	permission: EssSk.kick
+	trigger:
+		if player has permission "EssSk.kick":
+			if arg 1 is set:
+				if arg 2 is set:
+					kick arg 1 due to "&7Kicked for &c%arg 2% &7by &c%player%"
+					loop all players:
+						loop-player has permission "EssSk.notify"
+						send "&7[%{essPrefix}%&7] &c%player% &7kicked &c%arg 1% &7Reason: &c%arg 2%" to loop-player
+				else:
+					send "&7[%{essPrefix}%&7] &c/kick <Player> <Reason>"
+			else:
+				send "&7[%{essPrefix}%&7] &c/kick <Player> <Reason>"
+		else:
+			send "&7[%{essPrefix}%&7] &cNo permission"
+			stop
+
+command /baninfo [<offlineplayer>]:
+	permission: EssSk.baninfo
+	trigger:
+		if player has permission "EssSk.baninfo":
+			if arg is set:
+				if {banned.%arg 1%} is true:
+					send "&7&m------------------------"
+					send "&7&m------------------------"
+					send "&c&lBanned player&7: %arg 1%"
+					send "&c&lBanned by&7: %{ban.bannedby.%arg 1%}%"
+					send "&c&lBan reason&7: %{ban.reason.%arg 1%}%"
+					send "&c&lTime of Ban (EST) &7: %{ban.time.%arg 1%}%"
+					send "&c&lIP Banned &7: %{BanIP.%arg 1%}%"
+					send "&c&lExpiration&7: %{ban.expire.%arg 1%}%"
+					send "&7&m------------------------"
+				else:
+					send "&7[%{essPrefix}%&7] &cThis player is not banned"
+			else:
+				send "&7[%{essPrefix}%&7] &c/Baninfo <Player>"
+		else:
+			send "&7[%{essPrefix}%&7] &cNo Permission"
+			stop
+			
+command /unbanip [<offlineplayer>]:
+	permission: EssSk.unbanip
+	trigger:
+		if arg 1 is not set:
+			send "&7[%{essPrefix}%&7]You must specify a player."
+			stop
+		if arg 1 is set:
+			ip-unban arg 1
+			broadcast "&7[%{essPrefix}%&7]%arg 1% has been IP-unbanned."
+			stop
+
+command /ignore [<player>]:
+	permission: EssSk.ignore
+	usage: /ignore [player]
+	trigger:
+		if arg 1 is not set:
+			send "&7[%{essPrefix}%&7] You are ignoring: %{ignore::%uuid of player%::*}%"
+			stop
+		if arg 1 is set:
+			if arg 1 is "%player%":
+				send "&7[%{essPrefix}%&7] You cannot ignore yourself."
+				stop
+			else:
+				if {ignore::%uuid of player%::*} contains arg 1:
+					clear {ignore::%uuid of player%::%arg 1%}
+					send "&7[%{essPrefix}%&7] You are no longer ignoring %arg 1%."
+					stop
+				else:
+					set {ignore::%uuid of player%::%arg 1%} to arg 1
+					send "&7[%{essPrefix}%&7] You are now ignoring %arg 1%."
+					stop
+					
+command /helpop <text>:
+	permission: EssSk.helpop
+	trigger:
+		message "&4[HELPOP] &7%player's name%: &f%arg 1%"
+		loop all players:
+			loop-player has permission "EssSk.helpop.receive"
+			send "&4[HELPOP] &7%player's name%: &f%arg 1%" to loop-player
+			stop
+
+
+
+
+
+#Economy <--------------------#
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^#
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^#
+command /setworth [<item type = %tool of player%>] <number>:
+	permission: EssSk.setworth
+	trigger:	
+		set {VaultSK.support} to value "Options.Addons.VaultSK" get of "plugins/EssentialsSkript/config.yml"
+		if {VaultSK.support} is "true":
+			#set {EssSk.price.%argument 1%} to argument 2
+			set "Worth.%arg-1%" to "%arg-2%" in yaml file "plugins/VaultSK/worth.yml"
+			message "&7[%{essPrefix}%&7]&7 Set the price of %argument 1% to %argument 2%"
+			stop
+		else:
+			message "&7[%{essPrefix}%&7] &cEconomy requires VaultSK, get the addon!"
+			stop
+
+command /worth [<item type = %tool of player%>]:
+	permission: EssSk.worth
+	trigger:	
+		set {VaultSK.support} to value "Options.Addons.VaultSK" get of "plugins/EssentialsSkript/config.yml"
+		if {VaultSK.support} is "true":
+			#if {EssSk.price.%argument 1%} is not set:
+			#	message "&7[%{essPrefix}%&7] &7This item can not be sold to the server."
+			#	stop
+			set {VaultSK.worth} to value "Worth.%arg-1%" get of "plugins/VaultSK/worth.yml"
+			message "&7[%{essPrefix}%&7] &7This item costs %{VaultSK.worth}%!"
+			#message "&7[%{essPrefix}%&7] &7This item costs %{EssSk.price.%argument 1%}%!"
+			stop
+		else:
+			message "&7[%{essPrefix}%&7] &cEconomy requires VaultSK, get the addon!"
+			stop
+
+command /bal:
+	aliases: Balance
+	permission: EssSk.bal
+	Trigger:
+		set {VaultSK.support} to value "Options.Addons.VaultSK" get of "plugins/EssentialsSkript/config.yml"
+		if {VaultSK.support} is "true":
+			set {economy.on} to value "Options.Economy.Enabled" get of "plugins/EssentialsSkript/config.yml"
+			if {economy.on} is "true":
+				message "&aBalance: &c$%{balance::%player%}%"
+				stop
+		else:
+			message "&7[%{essPrefix}%&7] &cEconomy requires VaultSK, get the addon!"
+			stop
+		
+command /pay <player> <number>:
+	permission: EssSk.pay
+	Trigger:
+		set {VaultSK.support} to value "Options.Addons.VaultSK" get of "plugins/EssentialsSkript/config.yml"
+		if {VaultSK.support} is "true":
+			set {economy.on} to value "Options.Economy.Enabled" get of "plugins/EssentialsSkript/config.yml"
+			if {economy.on} is "true":
+				if arg 1 is player:
+					message "&cYou can't pay yourself!"
+					stop
+				if arg 2 is greater than {balance::%player%}:
+					send "&cYou don't have enough money to pay this player!" to player
+				else:
+					add arg 2 to {balance::%arg 1%}
+					message "&a$%arg 2% has been sent to %arg 1%"
+					message "&aYou have received $%arg 2% from %player%" to arg 1
+					stop
+		else:
+			message "&7[%{essPrefix}%&7] &cEconomy requires VaultSK, get the addon!"
+			stop
+			
+command /eco <text> <player> <number>:
+	usage: /eco give,set,reset <player> <amount>
+	permission: EssSk.eco
+	Trigger:
+		set {VaultSK.support} to value "Options.Addons.VaultSK" get of "plugins/EssentialsSkript/config.yml"
+		if {VaultSK.support} is "true":
+			set {economy.on} to value "Options.Economy.Enabled" get of "plugins/EssentialsSkript/config.yml"
+			if {economy.on} is "true":
+				if arg 1 is "give":
+					add arg 3 to {balance::%arg 2%}
+					message "&aYou have received $%arg 3%!" to arg 2
+				if arg 1 is "set":
+					set {balance::%arg 2%} to arg 3
+					message "&aYour balance was set to $%arg 3%!"
+				if arg 1 is "reset":
+					set {balance::%arg 2%} to 0
+					message "&aYour balance was reset!" to arg 2
+					stop
+		else:
+			message "&7[%{essPrefix}%&7] &cEconomy requires VaultSK, get the addon!"
+			stop
+			
+
+
+
+
+			
+#Teleport<-----------------------#
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^#
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^#
+command /setwarp <text>:
+	permission: EssSk.setwarp
+	description: Create a warp!
+	trigger:
+		set {essentials.%argument 1%.warp} to location of player
+		message "&7[%{essPrefix}%&7] &cWarp set"
+		stop
+		
+command /warp <text>:
+	permission: EssSk.warp
+	description: Warp to a warp
+	trigger:
+		teleport player to {essentials.%argument 1%.warp}
+		message "&7[%{essPrefix}%&7] &cWarped you to &c&l%argument 1%"
+		if {essentials.%argument 1%.warp} does not exist:
+			message "&7[%{essPrefix}%&7] &cThat warp does not exist!"
+			stop
+			
+command /delwarp <text>:
+	permission: EssSk.delwarp
+	description: Delete a warp
+	trigger:
+		delete {essentials.%argument 1%.warp}
+		message "&c&lDeleted Warp!"
+		stop
+	
+command /tpa <player>:
+	permission: EssSk.tpa
+	description: Teleport to an player
+	trigger:	
+		if arg 1 is player:
+			message "&cYou can't teleport to yourself!"
+			stop
+		set {essentials.tpa.%argument 1%} to player
+		send " &e%{essentials.tpa.%argument 1%}% wants to teleport to you." to argument 1
+		message "&e&lTeleport request was sent"
+		stop
+		
+command /tpahere <player>:
+	permission: EssSk.tpa
+	description: Teleport an player to you
+	trigger:
+		set {essentials.tpahere.%argument 1%} to player
+		send "&e%{essentials.tpa.%argument 1%}% wants you to teleport to him." to argument 1
+		message "&e&lTeleport request was sent"
+		stop
+		
+command /tpaccept:
+	trigger:
+		if {essentials.tpa.%player%} is not "0":
+			teleport {essentials.tpa.%player%} to location of player
+			send "&e%player% was teleported to you" to {essentials.tpahere.%player%} 
+			send "&eYou were teleported to %{essentials.tpahere.%player%} %" to player
+		if {essentials.tpahere.%player%} is not "0":
+			teleport player to location of {essentials.tpahere.%player%}
+			send "&eYou were teleported to %player%" to {essentials.tpahere.%player%} 
+			send "&e%{essentials.tpahere.%player%}% was teleported to you" to player
+		else:
+			message "&e&lThere aren´t any teleport requests"
+			stop
+
+command /sethome:
+	description: Set your home
+	permission: EssSk.home
+	executable by: players
+	trigger:
+		set {homes.%player%.location} to location of player
+		message "Set your home to <grey>%location of player%<reset>"
+		stop
+
+command /home:
+	description: Teleport yourself to your home
+	permission: EssSk.home
+	executable by: players
+	trigger:
+		if {homes.%player%.location} is not set:
+			message "You have not set your home yet!"
+			stop trigger
+		teleport player to {homes.%player%.location}
+		stop
+		
+command /setspawn:
+	permission: EssSk.setspawn
+	permission message: &4Sorry, but you need higher permission!
+	trigger:
+		set {spawn} to location of player
+		message "&7[%{essPrefix}%&7] &aYou set server spawn, succesfully!"
+		stop
+		
+command /spawn [<player>]:
+	trigger:
+		if {spawn} isn't set:
+			message "&7[%{essPrefix}%&7] &cError, spawn is not set!"
+			stop
+		else:
+			if argument 1 isn't set:
+				teleport player to {spawn}
+			else:
+				if player has permission "sk.spawn.admin":
+					teleport arg 1 to {spawn}
+				else:
+					send "&4Sorry, but you need higher permission!" to player
+					stop
+					
+command /delspawn:
+	permission: EssSk.delspawn
+	permission message: &4Sorry, but you need higher permission!
+	trigger:
+		delete {spawn}
+		message "&7[%{essPrefix}%&7] &cYou deleted the server spawn, succesfully!"
+		stop
+		
+command /tp <player>:
+	description: Teleports you to a player.
+	usage: /tp <target player>.
+	permission: EssSk.tp
+	trigger:
+		if player has permission "EssSk.tp":
+			teleport player to argument
+			message "&eTeleported to %argument%"
+			stop
+			
+command /tphere <player>:
+	usage: /tp <target player>
+	permission: EssSk.tph
+	trigger:
+		if player has permission "EssSk.tp":
+			message "&eTeleported %argument%"
+			teleport argument to player
+			stop
+			
+command /near [<integer = 10>]:
+	usage: EssSk.nearr
+	trigger:
+		add player to {EssSlnear::list}
+		loop players in radius argument 1 of the player:
+			add loop-player to {EssSlnear::list}
+			message "&6Players Near You&c %{EssSlnear::list}%"
+			stop
+			
+			
+			
+			
+			
+			
+			
+			
+#Fun<-------------------#
+#^^^^^^^^^^^^^^^^^^^^^^^#
+#^^^^^^^^^^^^^^^^^^^^^^^#
+command /explode <player>:
+	permission: EssSk.explode
+	trigger:
+		create explosion of force 0 at argument 1
+
+#command /firework:
+#	permission: EssSk.firework
+#	trigger:
+#		launch "CREEPER" firework at player timed 1 coloured red
+#		stop
+		
+command /ridepig <player>:
+	permission: EssSk.ridepig
+	trigger:
+		make the arg player ride a saddled pig
+		stop
+
+command /ridecow <player>:
+	permission: EssSk.ridecow
+	trigger:
+		make the arg player ride a cow
+		stop
+
+command /ridesheep <player>:
+	permission: EssSk.ridesheep
+	trigger:
+		make the arg player ride a sheep
+		stop
+
+command /ridechicken <player>:
+	permission: EssSk.ridechicken
+	trigger:
+		make the arg player ride a chicken
+		stop
+		
+command /ridehorse <player>:
+	permission: EssSk.ridehorse
+	trigger:
+		make the arg player ride a horse
+		stop
+		
+command /ridewither <player>:
+	permission: EssSk.ridewither
+	trigger:
+		make the arg player ride a wither
+		stop
+		
+command /ridedragon <player>:
+	permission: EssSk.ridedragon
+	trigger:
+		make the arg player ride a ender dragon
+		stop
+		
+command /ridezombie <player>:
+	permission: EssSk.ridezombie
+	trigger:
+		make the arg player ride a zombie
+		stop
+
+command /ridespider <player>:
+	permission: EssSk.ridespider
+	trigger:
+		make the arg player ride a spider
+		stop
+		
+command /rideenderman <player>:
+	aliases: /rideeman
+	permission: EssSk.rideenderman
+	trigger:
+		make the arg player ride a enderman
+		
+on join:
+	message "&6Welcome to the server! Do /list to check for online players"
+	
+command /motd: #Make both the messages the same!
+	permission: EssSk.motd
+	trigger:
+		send "&6Welcome to the server! Do /list to check for online players"
+		stop
+		
+command /antioch:
+	permission: EssSk.antioch
+	trigger:
+		spawn 1 primed tnt at the targeted block
+		stop
+		
+command /fakeop <player>:
+		usage: /fakeop <player>
+		permission: EssSk.fakeop
+		trigger:
+				send "&7&o[Server: Opped %arg 1%]" to arg player				
+				message "&7&o[Server: Opped %arg 1%]"
+				stop
+
+command /fakedeop <player>:
+		usage: /fakedeop <player>
+		permission: EssSk.fakedeop
+		trigger:
+				send "&7&o[Server: Deopped %arg 1%]" to arg player
+				message "&7&o[Server: Deopped %arg 1%]"
+				stop
+				
+command /sudo [<player>] [<text>]:
+	permission: EssSk.sudo
+	trigger:
+		if arg 1 is not set:
+			send "&7[%{essPrefix}%&7]You must specify a player to sudo."
+			stop
+		if arg 1 is set:
+			if arg 2 is not set:
+				send "&7[%{essPrefix}%&7]You must specify a command to sudo on %arg 1%."
+				stop
+			if arg 2 is set:
+				make arg 1 execute command "%arg 2%"
+				send "&7[%{essPrefix}%&7]%arg 1% &8:: &e%arg 2%"
+				loop all players:
+					if loop-player has permission "EssSk.social":
+						send "&7[%{essPrefix}%&7]%player% &esudoed &7%arg 1% &8: &c%arg 2%" to loop-player
+						stop
+					if {socialspy::%uuid of loop-player%} is set:
+						send "&7[%{essPrefix}%&7]%player% &esudoed &7%arg 1% &8: &c%arg 2%" to loop-player
+						stop
+				stop
+
+command /enchant [<enchantment type>]:
+	permission: EssSk.enchant
+	aliases: /enchantment
+	trigger:
+		if arg 1 is not set:
+			message "&7[%{essPrefix}%&7]Please specify an enchantment to apply."
+			stop
+		if player's tool is air:
+			message "&7[%{essPrefix}%&7]You cannot enchant air."
+			stop
+		else:
+			enchant player's tool with arg 1
+			send "&7[%{essPrefix}%&7]Your item has been enchanted with %arg 1%."
+			stop
+
+command /jump:
+	permission: EssSk.jump
+	trigger:
+		set {back::%uuid of player%} to location of player
+		teleport the player to the targeted block	
+		stop
+		
+command /fireball:
+	permission: EssSk.fireball
+	trigger:
+		set {FireBallSpeed} to value "Options.Other.FireBallSpeed" get of "plugins/EssentialsSkript/config.yml"
+		shoot a fireball at speed {FireBallSpeed}
+		stop
+		
+command /spawnmob [<entity types>] [<number>] [<player>]:
+	description: Receive the Skull of a Player
+	permission: EssSk.spawnmob
+	usage: /spawnmob(mob) <mob> [amount] [player]
+	trigger:		
+		if arg 1 is not set:
+			send "&7[%{essPrefix}%&7]You must specify a mob to spawn."
+			stop
+		if arg 1 is set:
+			if arg 2 is not set:
+				spawn 1 of arg 1 at the player
+				send "&7[%{essPrefix}%&7]1 %arg 1% has been spawned."
+				stop
+			if arg 2 is set:
+				if arg 3 is not set:
+					spawn arg 2 of arg 1 at the player
+					send "&7[%{essPrefix}%&7] %arg 2% %arg 1%(s) have been spawned."
+					stop
+				if arg 3 is set:	
+					if player has permission "EssSk.spawnmob.others":
+						spawn arg 2 of arg 1 at arg 3										
+						send "&7[%{essPrefix}%&7] %arg 2% %arg 1%(s) have been spawned on %arg 3%."	
+						stop		
+					else:
+						send "Lol, No" #You can change this line if you want#
+						stop
+						
+command /burn <player> <timespan>:
+	permission: EssSk.burn
+	trigger:
+		ignite the arg player for arg timespan
+		stop
+
+command /extinguish <player>:
+	permission: EssSk.burn
+	trigger:
+		extinguish the arg player
+		stop
+				
+command /top:
+	aliases: surface
+	permission: EssSk.top
+	trigger:
+		if player has permission "EssSk.top2":
+			set {_loc} to location of player
+			set y-coordinate of {_loc} to 257
+			loop 256 times:
+				remove 1 from the y-coordinate of {_loc}
+				if block at {_loc} is not air or torch or sign or water or lava:
+					teleport player to block above {_loc}
+					stop loop
+					send "&8&l? &bTeleported to the top-most block at your location. &b&oY=%y coordinate of player%"
+					stop
+		else:	
+			send "&8&l? &c&oNo Permission"
+			stop
+command /hat <material>:
+	permission: EssSk.hat
+	usage: /hat <block>
+	trigger:
+		equip player with arg material
+		message "&3Enjoy your new hat!"	
+		stop
+				
+command /tree [<text>]:
+	permission: EssSk.tree
+	trigger:
+		if the targeted block is not grass or dirt:
+			message "&7[%{essPrefix}%&7] Trees can only be grown on grass and dirt."
+			stop
+		if arg 1 is not set:
+			grow tree of type any tree above the targeted block
+			message "&7[%{essPrefix}%&7] A tree has been grown above the block you are looking at."
+			stop			
+
+command /ping:
+	description: Pong!
+	permission: EssSk.ping
+	trigger:
+		message "Pong!"
+		stop
+		
+command /nick <text> [<player>]:
+	aliases:nickname
+	description: set your or an other players Nickname
+	permission:EssSk.nick
+	trigger:
+		if argument 2 is not set:
+			set display name of player to "%colored argument 1%"
+			set {essentials.%player%.nick} to "%colored argument 1%"
+			message "&7[%{essPrefix}%&7] &2Your name was set to %argument 1%"
+		else:
+			player has permission "EssSk.color":
+				set display name of argument 2 to "%colored argument 1%"
+				set {essentials.%arg 2%.nick} to "%argument 1%"
+				message "&7[%{essPrefix}%&7] &2You set the Name of &4%argument 2% &4to %colored argument 1%"
+				stop
+
+command /realname <text>:
+	permission:EssSk.realname
+	trigger:
+		player has permission "EssSk.realname"
+		loop all players:
+			"%uncolored {essentials.%loop-player%.nick}%" contains "%arg%"
+			message "&7[%{essPrefix}%&7] &e%{essentials.%loop-player%.nick}% &eis %loop-player%"
+			stop
+			
+command /rocket <player>:
+	permission: EssSk.rocket
+	trigger:
+		broadcast "&7GOOOOOOOOOOOO!"
+		loop {@rocketlength} times:
+			wait 5 ticks
+			create explosion of force 0 at location of argument 1
+			push argument 1 upwards at speed 3
+			apply resistance 100 to argument 1 for 1 second
+		wait 1 second
+		push argument 1 downwards at speed 10			
+		stop
+
+command /skull <text>:
+	Permission: EssSk.skull
+	usage: /Skull <Player Name>
+	trigger:
+		execute console command "/give %player% skull 1 3 {SkullOwner:%arg-1%}"
+		send "&bYou've given %player% %arg-1%'s skull" to player
+		stop
+
+command /Speed <text>:
+	description: Gives player a speed boost
+	usage: /Speed <test>
+	permission: Player.Speed
+	trigger:
+		if block below player is not air:
+			if argument 1 isn't set:
+				message "&fPlease choose a walk speed."
+				stop
+			if argument 1 is "1":
+				set player's walk speed to 0.2
+				message "&7You're now in speed 1"
+			if argument 1 is "2":
+				set player's walk speed to 0.3
+				message "&7You're now in speed 2"
+			if argument 1 is "3":
+				set player's walk speed to 0.4
+				message "&7You're now in speed 3"
+			if argument 1 is "4":
+				set player's walk speed to 0.5
+				message "&7You're now in speed 4"
+			if argument 1 is "5":
+				set player's walk speed to 0.6
+				message "&7You're now in speed 5"
+			if argument 1 is "6":
+				set player's walk speed to 0.7
+				message "&7You're now in speed 6"
+			if argument 1 is "7":
+				set player's walk speed to 0.8
+				message "&7You're now in speed 7"
+			if argument 1 is "8":
+				set player's walk speed to 0.9
+				message "&7You're now in speed 8"
+			if argument 1 is "9":
+				set player's walk speed to 1.0
+				message "&7You're now in speed 9"
+			if argument 1 is "10":
+				set player's walk speed to 1.1
+				message "&7You're now in speed 10"
+		if block below player is air:
+			if argument 1 isn't set:
+				message "&fPlease choose a fly speed."
+				stop
+			if argument 1 is "1":
+				set player's fly speed to 0.2
+				message "&7You're now in speed 1"
+			if argument 1 is "2":
+				set player's fly speed to 0.3
+				message "&7You're now in speed 2"
+			if argument 1 is "3":
+				set player's fly speed to 0.4
+				message "&7You're now in speed 3"
+			if argument 1 is "4":
+				set player's fly speed to 0.5
+				message "&7You're now in speed 4"
+			if argument 1 is "5":
+				set player's fly speed to 0.6
+				message "&7You're now in speed 5"
+			if argument 1 is "6":
+				set player's fly speed to 0.7
+				message "&7You're now in speed 6"
+			if argument 1 is "7":
+				set player's fly speed to 0.8
+				message "&7You're now in speed 7"
+			if argument 1 is "8":
+				set player's fly speed to 0.9
+				message "&7You're now in speed 8"
+			if argument 1 is "9":
+				set player's fly speed to 1.0
+				message "&7You're now in speed 9"
+			if argument 1 is "10":
+				set player's fly speed to 1.1
+				message "&7You're now in speed 10"
+
+			
+			
+			
+			
+			
+			
+#Battle!<---------------#
+#^^^^^^^^^^^^^^^^^^^^^^^#		
+#^^^^^^^^^^^^^^^^^^^^^^^#
+command /kit <text> [<player>]:
+	permission: EssSk.kit
+	trigger:
+		if {kits::%arg 1%::kit} is set:
+			arg 2 is set:
+				restore inventory of arg 2 from {kits::%arg 1%::kit}
+				message "&cYou've been given the &e%arg 1%&c kit!" to arg 2
+				stop
+			else:
+				restore inventory of player from {kits::%arg 1%::kit}
+				message "&cYou've been given the &e%arg 1%&c kit!"
+				stop
+				
+command /kits [<text>]:
+	permission: EssSk.kits
+	trigger:
+		message "&c&lKits:"
+		loop {kits::list::*}:
+			message "&e%loop-value%"
+			stop
+
+command /createkit <text>:
+	permission: EssSk.createkit
+	trigger:
+		"%{kits::list::*}%" doesn't contain "%arg-1%":
+			set {kits::%arg 1%::kit} to serialized contents of player
+			add arg 1 to {kits::list::*}
+			message "&eCreated kit named %arg% based off of your inventory"
+			stop
+		else:
+			message "&eKit already created!"
+			stop
+
+command /delkit <text>:
+	permission: EssSk.delkit
+	trigger:
+		{kits::list::*} contains arg:
+			remove arg from {kits::list::*}
+			message "&cDeleted kit %arg%"
+			stop
+			
+command /God:
+	permission: EssSk.God
+	trigger:
+		if {god.enabled.%player%} = 0:
+			message "&cGod Mode Enabled"
+			set {god.enabled.%player%} to 1
+			stop
+		else:
+			message "&cGod Mode Disabled"
+			set {god.enabled.%player%} to 0
+			stop
+on damage:
+	if {god.enabled.%victim%} is 1:
+		cancel event
+		stop
+	
+command /setjail:
+	permission: EssSk.setjail
+	trigger:
+		set {EssSk.jail} to location of player
+		message "&7Set the jail to &7&l%location of player%<reset>"
+		stop
+		
+command /jail <player> [<timespan>]:
+	permission: EssSk.jail
+	trigger:
+		if {EssSk.jail} is not set:
+			message "&7A jail has not been set yet!"
+			stop trigger
+		If argument 2 is not set:
+			set {EssSk.jail.%player%} to true
+		else:
+			set {EssSk.jail.%player%} to argument 2
+		set {EssSk.jail.back.%player%} to location of player
+		teleport argument 1 to {EssSk.jail}
+		send "&7You are jailed" to player
+		message "&7jailed &7&l%player%"
+		stop
+	
+on break:
+	if {EssSk.jail.%player%} is true:
+		cancel event
+		stop
+on place:
+	if {EssSk.jail.%player%} is true:
+		cancel event
+		stop
+
+
+
+
+
+
+		
+#Utilities<-------------#
+#^^^^^^^^^^^^^^^^^^^^^^^#
+#^^^^^^^^^^^^^^^^^^^^^^^#
+command /unlimited:
+	permission: EssSk.unlimited
+	trigger:
+		if {EssSk.unlimited.%player%} is true:
+			set {EssSk.unlimited.%player%} to false
+			message "&7Set Unlimited to false."
+			stop
+		if {EssSk.unlimited.%player%} is false:
+			set {EssSk.unlimited.%player%} to true
+			message "&7Set Unlimited to true."
+			stop
+		else if {EssSk.unlimited.%player%} is not set:
+			set {EssSk.unlimited.%player%} to false
+			message "&7Set Unlimited to false."
+			stop
+
+command /exp <number> [<player>]:
+	aliases: experience
+	permission: EssSk.exp
+	trigger:
+		If argument 2 is set:
+			set level of argument 2 to argument 1
+			message "&cYou set the Level of &2%argument 2%&c to &2%argument 2%."
+			stop
+		else:
+			set level of player to argument 1
+			message "&cYou set your level to &2%argument 2%."
+			stop
+			
+command /report <player> <text>:
+	permission: EssSk.report
+	trigger:
+		set {report.%player%.lastused} to now
+		If {cooldown.%player%.creport} was less than {@cooldown} ago:
+			message "&7Please wait {@cooldown} before reporting another time!"
+			stop
+		message "&aOk, sent."
+		loop all players:
+			loop-player has permission "EssSk.report.recieve"
+			send "&e%command sender%&d has reported&e %arg 1%&d with:&e %arg 2%" to loop-player
+			stop
+			
+command /rules:
+	permission: EssSk.rules
+	trigger:
+		send "Hi"
+		send "Send as many of these as you want"
+		send "edit this"
+		stop	
+
+command /msg <player> <text>:
+	aliases: tell, m, t, whisper
+	description:Send an message
+	permission: EssSk.msg
+	trigger:
+		if {essentials.%argument 1%.afk} is true:
+			message "&e&lThis player is afk at the Moment"
+			stop
+		if {essentials.%player%.ignore} is argument 1:
+			message "&e&lThis player Ignores you."
+			stop
+		else:
+			send "&e&l[%player% > %argument 2%]" to argument 1
+			send "&e&l[%player% > %argument 1%] %argument 2%" to player
+			set {essentials.%argument 1%.reply} to player
+			stop
+			
+command /r <text>:
+	aliases: reply
+	description: Reply to the last private message.
+	permission: EssSk.msg
+	trigger:
+		send "&e&l[%player% > %argument 1%]" to {essentials.%player%.reply}
+		send "&e&l[%player% > %argument 1%]" to player
+		stop
+		
+command /feed:
+	permission: EssSk.feed
+	trigger:
+		message "&e&lHunger filled!"
+		set hunger bar to 10
+		stop
+
+
+command /break:
+	aliases:destroy
+	description: Breaks the block you are looking at
+	permission: EssSk.break
+	trigger:
+		drop the targeted block
+		set the targeted block to air
+		stop
+
+command /back:
+	permission: EssSk.back
+	description: Teleports you to your last location
+	trigger:
+		if {essentials.%player%.death} is set:
+			set {essentials.%player%.back} to {essentials.%player%.death}
+			clear {essentials.%player%.death} 
+		if {essentials.%player%.back} is air:
+			if block above {essentials.%player%.back} is air:
+				if block below {essentials.%player%.back} is not air or lava:
+					teleport player to {essentials.%player%.back}
+					message "&7[%{essPrefix}%&7] &2Teleported Back"
+					stop
+		loop blocks in radius 10 around {essentials.%player%.back}:
+			if loop-block is air:
+				if block above loop-block is air:
+					if block below loop-block is not air or lava:
+						teleport player to loop-block
+						message "&7[%{essPrefix}%&7] &2Teleported Back"
+						stop
+		teleport player to {essentials.%player%.back}
+		message "&7[%{essPrefix}%&7] &2Teleported Back"
+		stop
+		
+on teleport:
+	set {essentials.%player%.back} to location of player
+on death:
+	set {essentials.%player%.death} to location of player
+
+command /afk:
+	description: Be AFK
+	permission: EssSk.afk
+	trigger:	
+		if {essentials.%player%.afk} is true:
+			set {essentials.%player%.afk} to false
+			broadcast "&7[%{essPrefix}%&7] &c%player% &7is not longer AFK"
+			stop
+		else:
+			set {essentials.%player%.afk} to true
+			broadcast "&7[%{essPrefix}%&7] &c%player% &7is now AFK"
+			stop
+
+command /i <item> [<integer>]:
+	aliases: /item
+	usage: /i [item] (amount)
+	permission: EssSk.item
+	trigger:
+		if player doesn't have space for argument 1:
+			message "&4Your inventory is already full"
+			stop
+		if argument 2 is not set:
+			message "&4You get a %argument 1%"
+			give argument 1 to player
+			stop
+		message "&4You get %argument 2% %argument 1%s"
+		loop argument 2 times:
+			give argument 1 to player
+			if player doesn't have space for argument 1:
+				message "&4Inventory now &4&lfull"
+				stop
+		
+command /repair:
+	permission: EssSk.repair
+	trigger:
+		repair tool of player
+		stop
+				
+command /mail [<text=info>] [<integer>] [<offlineplayer>] [<text>]:
+	description: Write some mail
+	permission: EssSk.Mail
+	trigger:
+		if {mail.on} is true:
+			if argument 1 is "info" or "help":
+				message " &7[%{essPrefix}%&7] This Is your mailbox."
+				message " &7[%{essPrefix}%&7] To read mail use /mail read [Number of mail]"
+				message " &7[%{essPrefix}%&7] You write mail with /mail send (player) (text)"
+				message " &7[%{essPrefix}%&7] You can delete old mail with /mail delete (all/number)"
+				stop
+			if argument 1 is "send":
+				if argument 3 is not set:
+					message " &7[%{essPrefix}%&7]  Use /mail send (player) (text)"
+					stop
+				if argument 4 is not set:
+					message " &7[%{essPrefix}%&7]  Please enter a text"
+					stop
+				if argument 3 is not offline:
+					message " &7[%{essPrefix}%&7]  You can only mail offline players, If you want to chat privately use /msg"
+					stop
+				if {Mail.%argument 3%} is not set:
+					set {Mail.%argument 3%} to 0
+					add 1 to {Mail.%argument 3%}
+					set {Mail.%argument 3%::%{Mail.%argument 3%}%} to "%player%: %argument 4%"
+					message "Message sent"
+					stop
+			if argument 1 is "read":
+				if argument 2 is not set:
+					message "---Mail %{Mail.%player%}%/%{Mail.%player%}% ---"
+					message "%{Mail.%player%::%{Mail.%player%}%}%"
+					stop
+				else:
+					message "---Mail %argument 2%/%{Mail.%player%}% ---"
+					message "%{Mail.%player%::%argument 2%}%"
+					stop
+			if argument 1 is "delete":
+				if argument 2 is not set:
+					message "&7[%{essPrefix}%&7]	 Delete mail with /mail deletall"
+					stop
+					reduce {Mail.%player%} by 1
+					clear {Mail.%player%::%argument 2%}
+					set {_counter} to argument 2
+					add 1 to {_counter}
+					loop ({_counter}-2) times:
+						set {_subcounter} to ({_counter}-1)
+						set {Mail.%player%::%{_subcounter}%} to {Mail.%player%::%{_counter}%}
+						add 1 to {_counter}
+						message "&7[%{essPrefix}%&7] Deleted mail %argument 2%"
+						stop
+			if argument 1 is "deleteall":
+				clear {Mail.%player%::*}
+				clear {Mail.%player%}
+				message "&7[%{essPrefix}%&7] Deleted all mail"
+				stop
+		if {mail.on} is false:
+			stop
+		if {mail.on} is not set:
+			set {mail.on} to value "Options.mail" get of "plugins/EssentialsSkript/config.yml"
+			stop
+			
+command /seen [<offlineplayer>]:
+	permission: EssSk.seen
+	trigger:
+		if arg 1 is not set:
+			send "&7[%{essPrefix}%&7]You must specify a player."
+		if arg 1 is set:
+			if arg 1 is online:
+				send "&7[%{essPrefix}%&7] %arg 1% is online."
+				stop
+			else:
+				set {_seen} to {seen::%uuid of arg 1%}
+				send "&7[%{essPrefix}%&7] %arg 1% has been offline for %difference between {_seen} and now%." to player
+				stop
+command /night:
+	permission: EssSk.night
+	trigger:
+		execute command "time set night"
+		message "&5Time set to 8:00AM - 16000 ticks"
+		stop
+
+command /day:
+	permission: EssSk.day
+	trigger:
+		execute command "time set day"
+		message "&5Time set to day"
+		stop
+
+command /sun:
+	permission: EssSk.sun
+	trigger:
+		execute command "weather clear"
+		message "&5Weather has been cleared"
+		stop
+
+command /rain:
+	permission: EssSk.rain
+	trigger:
+		execute command "weather rain"
+		message "&5It is not rainy"
+		stop
+		
+command /freeze <player> <timespan>:
+	permission: EssSk.freeze
+	usage: /freeze <player> <time> Example: /freeze PlayerName 20 seconds
+	trigger:
+		apply slowness 100 to argument 1 for argument 2
+		apply mining fatigue 100 to argument 1 for argument 2
+		apply jump boost 200 to argument 1 for argument 2
+		apply resistance 10 to argument 1 for argument 2
+		stop
+
+command /unfreeze <player> :
+	permission: EssSk.freeze
+	trigger:
+		remove slowness from argument
+		remove mining fatigue from argument
+		remove jump boost from argument
+		remove resistance from argument
+		stop
+		
+command /v:
+	permission: EssSk.vanish
+	aliases: vanish
+	executable by: players
+	trigger:
+		if {vanish.%player%} is not set:
+			message "&aVanish is now enable." to player
+			apply invisibility 100 to player for 9999 seconds
+			set {vanish.%player%} to true
+			stop
+		message "&cVanish is now disabled." to player
+		remove invisibility from player
+		delete {vanish.%player%}
+		stop
+		
+command /gma:
+		permission: EssSk.gamemode.adventure
+		trigger:
+				make player execute command "/gamemode adventure"
+				stop
+
+command /gmsp:
+		permission: EssSk.gamemode.spectator
+		trigger:
+				make player execute command "/gamemode spectator"
+				stop
+				
+command /compass [<player>]:
+	permission: EssSk.compass
+	trigger:
+		if arg 1 is not set:
+			send "&7[%{essPrefix}%&7] You are facing %player's yaw% degrees %player's facing%." to player
+			stop
+		if arg 1 is set:
+			if player has permission "EssSk.compass.others":
+				send "&7[%{essPrefix}%&7] %arg 1% is facing %arg 1's yaw% degrees %arg 1's facing%." to player
+				stop
+			else:
+				send "&4No Permission"
+				stop				
+
+command /invsee <offlineplayer>:
+	usage: /invsee <player>
+	permission: EssSk.invsee
+	trigger:
+		open the arg-1's inventory for the player
+		stop
+
+command /endsee <offlineplayer>:
+	usage: /invsee <player>
+	permission: EssSk.invsee
+	trigger:
+		open the arg-1's ender chest for the player
+		stop
+		
+Command /fly:
+	Description: Toggle flight
+	Usage: /fly
+	Executable by: players
+	Permission: EssSk.fly
+	Trigger:
+		If {fly.%player%} is not set:
+			Send "&8Flight mode is now &cenabled&8." to player
+			set player's flight mode to true
+			Set {fly.%player%} to true
+			Stop
+		Send "&8Flight mode is now &cdisabled&8." to player
+		set player's flight mode to false
+		Delete {fly.%player%}
+		Stop
+		
+command /kill <player>:
+	aliases: die
+	trigger:
+		player has permission "EssSk.kill":
+			kill argument 1	
+			stop
+			
+command /heal:
+	description: Heals you
+	usage: /heal
+	permission: EssSk.heal
+	trigger:
+		apply Instant Health to the player for 3 seconds
+		message "&e&lYou have been healed!" to player
+		stop
+		
+command /gms [<player=%player%>]:
+	permission: EssSk.gms
+	trigger:
+		set gamemode of player argument to survival
+		message "&eYou have set %player argument%'s gamemode to survival" to player
+		stop
+		
+command /gmc [<player=%player%>]:
+	permission: EssSk.gmc	
+	trigger:
+		set gamemode of player argument to creative
+		message "&eYou have set %player argument%'s gamemode to creative" to player
+		stop
+
+command /Broadcast [<text>]:
+	aliases: bc
+	permission: EssSk.bc
+	permission message: &cNo Permission!.
+	trigger:
+		if arg 1 is not set:
+			send "&3Problema &cUse: /broadcast(message)" to player
+			stop
+		if arg 1 is set:
+			broadcast "&8[&4Broadcast&8] &f&l%arg-1%"
+			stop
+		
+
+
+
+		
+#EssentialsProtect/AntiBuild<----------#
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^#	
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^#
+		
+command /antibuild <text>:
+	permission: EssSk.antibuild
+	trigger:
+		if arg 1 is "on":
+			set {antibuild} to true
+			stop
+		if arg 1 is "off":
+			set {antibuild} to false
+			stop
+		
+on break:
+	if {antibuild} is true:
+		cancel event
+		stop
+		
+on place:
+	if {antibuild} is true:
+		cancel event
+		stop
+
+		
+		
+		
+		
+#Item Info & GUI STUFF<----------------------#
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^#
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^#
+command /name <text>:
+	permission: EssSk.name
+	trigger:
+		set the name of the player's tool to "%colored arg 1%"
+		stop
+
+command /lore <number> <text>:
+	permission: EssSk.lore
+	usage: /lore <line> <name>
+	trigger:
+		set line number arg of lore of player's tool to "%colored arg 2%"
+		stop
+
+command /enderchest [<player>]:
+	aliases: /echest, /ec
+	permission: EssSk.enderchest
+	Trigger:
+		if arg 1 is set:
+			if player has permission "EssSk.enderchest.other":
+				open the ender chest of arg 1  to the player
+				stop
+		open the player's ender chest to the player
+		stop
+		  
+command /workbench:
+	aliases: /wb 
+	permission: EssSk.workbench
+	Trigger:
+		open crafting table to player
+		stop
+		  
+command /anvil:
+	permission: EssSk.anvil
+	trigger:
+		open anvil to player
+		stop
+		
+		
+		
+		
+		
+		
+#Chat<---------------------------#
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^.#
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^#
+command /plugins:
+	trigger:
+		if {plugins.on} is "true":
+			message "&fPlugins (69): &aBaconCore&f, &aBaconPerms&f, &aBaconBuild" to player
+		else if {plugins.on} is "false":
+			stop
+		if {plugins.on} is not set:
+			set {plugins.on} to value "Options.Grief" get of "plugins/EssentialsSkript/config.yml"
+			stop
+		
+command /pl: #Edit the number of plugins and plugin names in both of these #
+	trigger:	
+		if {plugins.on} is "true":	
+			message "&fPlugins (69): &aBaconCore&f, &aBaconPerms&f, &aBaconBuild" to player
+		else if {plugins.on} is "false":
+			stop
+		if {plugins.on} is not set:
+			set {plugins.on} to value "Options.pluginblock" get of "plugins/EssentialsSkript/config.yml"
+			stop
+		
+on chat:
+	set {anticuss.on} to value "Options.Chat.AntiSwear" get of "plugins/EssentialsSkript/config.yml"
+	if {anticuss.on} is "true":
+		replace all "Play." in message with "{@Censored}" #Change all of these to whatever
+		replace all "play." in message with "{@Censored}"
+		replace all ".com" in message with "{@Censored}"
+		replace all ".io" in message with "{@Censored}"
+		replace all ".me" in message with "{@Censored}"
+		replace all ".net" in message with "{@Censored}"
+		replace all ".org" in message with "{@Censored}"
+		replace all ".tk" in message with "{@Censored}"
+		replace all "Mc." in message with "{@Censored}"
+		replace all "23." in message with "{@Censored}"
+		replace all "192." in message with "{@Censored}"
+		replace all "67." in message with "{@Censored}"
+		replace all ":25565" in message with "{@Censored}"
+		replace all "cosmic" in message with "{@Censored}"
+		replace all "Fuck" in message with "{@Censored}"
+		replace all "Shit" in message with "{@Censored}"
+		replace all "Fukc" in message with "{@Censored}"
+		replace all "Fuck Niggers" in message with "{@Censored}"
+		replace all "Fucker" in message with "{@Censored}"
+		replace all "Fuker" in message with "{@Censored}"
+		replace all "Fucer" in message with "{@Censored}"
+		replace all "Nigger" in message with "{@Censored}"
+		replace all "Nigga" in message with "{@Censored}"
+		replace all "DOT " in message with "{@Censored}"
+		replace all "(Dot)" in message with "{@Censored}"
+		replace all "Cunt" in message with "{@Censored}"
+		replace all "Ass" in message with "{@Censored}"
+		replace all "bitch" in message with "{@Censored}"
+		replace all "bish" in message with "{@Censored}"
+		replace all "Ddos" in message with "{@Censored}"
+		replace all "Dos" in message with "{@Censored}"
+		replace all "porn" in message with "{@Censored}"
+		replace all "pornhub" in message with "{@Censored}"
+		replace all "xvideos" in message with "{@Censored}"
+		replace all "retard" in message with "{@Censored}"
+		replace all "motherfucker" in message with "{@Censored}"
+		replace all "bastard" in message with "{@Censored}"
+		replace all "dick" in message with "{@Censored}"
+		replace all "pussy" in message with "{@Censored}"
+	else:
+		stop
+		
+command /me <text>:
+	permission: EssSk.me
+	trigger:
+		broadcast "&4* %player% &7%argument 1%"
+		stop
+		
+command /clearchat:
+	aliases: cc
+	permission: EssSk.cc
+	permission message: &c&l&cYou do not have permission to clear chat!
+	trigger:
+		loop 100 times:
+			broadcast ""
+		loop 1 times:
+			broadcast "&e&l(!) &eChat Has Just Been Cleared!"
+			stop
+
+on chat:
+	if player doesn't have permission "EssSk.allow.spam":
+		if {chat.spam.%player%} is true:
+			set {chat.spam.%player%} to false
+			wait {@spamcooldown} seconds
+			set {chat.spam.%player%} to true
+			stop
+		else:
+			cancel event
+			send "&7[%{essPrefix}%&7] &8No Spamming" to player
+			stop
+		
+on join:
+	set {chat.spam.%player%} to true
+	stop
+	
+
+	
+			
+			
+			
+#Color Chat<--------------------#
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^#
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^#
+command /colorchat [<text>]:
+	aliases: /color
+	permission: colorchat.color
+	trigger:
+		if arg 1 is "colors":
+			message " &cRed, &eYellow, &bBlue, &aGreen, &F&LClear" to player
+		if arg 1 is not "Red" or "yellow" or "blue" or "green" or  "LIGHT_RED" or "GOLD" or "DARK_GREEN" or "LIGHT_RED" or "Clear":
+			message "&4&lInvaild Color &8> &f%arg-1%" to player
+		if arg 1 is "LIGHT_RED":
+			set {c.%player%} to "&c"
+			message "&7Your chat color is now &cLight Red&7." to player
+			stop
+		if arg 1 is "YELLOW":
+			set {c.%player%} to "&e"
+			message "&7Your chat color is now &eYellow&7." to player
+			stop
+		if arg 1 is "BLUE":
+			set {c.%player%} to "&9"
+			message "&7Your chat color is now &bBlue&7." to player
+			stop
+		if arg 1 is "GREEN":
+			set {c.%player%} to "&a"
+			message "&7Your chat color is now &aGreen&7." to player
+			stop
+		if arg 1 is "RED":
+			set {c.%player%} to "&4"
+			message "&7Your chat color is now &4Red&7." to player
+			stop
+		if arg 1 is "GOLD":
+			set {c.%player%} to "&6"
+			message "&7Your chat color is now &4Red&7." to player
+			stop
+		if arg 1 is "DARK_GREEN":
+			set {c.%player%} to "&2"
+			message "&7Your chat color is now &2Dark Green&7." to player
+			stop
+		if arg 1 is "BOLD":
+			set {c.%player%} to "&l"
+			message "&7Your chat color is now &lBold&7."  to player
+			stop
+		if arg 1 is "clear":
+			delete {c.%player%}
+			message "&7Your chat color is now &fWhite&7."  to player
+			stop
+		if arg 1 is not set:
+			message "&bType &c/C colors &bfor list of the chat colors."	 to player
+			message "&b/color (color)  Example: /color red"	 to player
+			stop
+			
+			
+			
+			
+			
+#Signs<-------------------------#
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^#
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^#
+on sign change:
+	if player has permission "EssSk.create":
+		if line 1 is "[EssSk]":
+			if line 3 is "Sunny":
+				set {_Option.spawnSign} to value "Options.Signs.Sunny" get of "plugins/EssentialsSkript/config.yml"
+				if {_Option.spawnSign} is "true":
+					set line 1 to "&7[&6&lEssSk&7]"
+					set line 3 to "&8&lSunny"
+					stop
+			if line 3 is "Storm":
+				set {_Option.spawnSign} to value "Options.Signs.Storm" get of "plugins/EssentialsSkript/config.yml"
+				if {_Option.spawnSign} is "true":
+					set line 1 to "&7[&6&lEssSk&7]"
+					set line 3 to "&8&lStorm"
+					stop
+			if line 3 is "Night":
+				set {_Option.spawnSign} to value "Options.Signs.Night" get of "plugins/EssentialsSkript/config.yml"
+				if {_Option.spawnSign} is "true":
+					set line 1 to "&7[&6&lEssSk&7]"
+					set line 3 to "&8&lNight"
+					stop
+			if line 3 is "Day":
+				set {_Option.spawnSign} to value "Options.Signs.Day" get of "plugins/EssentialsSkript/config.yml"
+				if {_Option.spawnSign} is "true":
+					set line 1 to "&7[&6&lEssSk&7]"
+					set line 3 to "&8&lDay"
+					stop
+			if line 3 is "Spawn":
+				set {_Option.spawnSign} to value "Options.Signs.Spawn" get of "plugins/EssentialsSkript/config.yml"
+				if {_Option.spawnSign} is "true":
+					set line 1 to "&7[&6&lEssSk&7]"
+					set line 3 to "&8&lSpawn"
+					stop
+			if line 3 is "Repair":
+				set {_Option.repairSign} to value "Options.Signs.Repair" get of "plugins/EssentialsSkript/config.yml"
+				if {_Option.repairSign} is "true":
+					set line 1 to "&7[&6&lEssSk&7]"
+					set line 3 to "&8&lRepair"
+					stop
+			if line 3 is "Warp":
+				set {_Option.warpSign} to value "Options.Signs.Warp" get of "plugins/EssentialsSkript/config.yml"
+				if {_Option.warpSign} is "true":
+					set line 1 to "&7[&6&lEssSk&7]"
+					set line 3 to "&8&lWarp"
+					stop
+			if line 3 is "Balance":
+				set {_Option.balanceSign} to value "Options.Signs.Balance" get of "plugins/EssentialsSkript/config.yml"
+				if {_Option.balanceSign} is "true":
+					set line 1 to "&7[&6&lEssSk&7]"
+					set line 3 to "&8&lBalance"
+					stop
+			if line 3 is "Feed":
+				set {_Option.feedSign} to value "Options.Signs.Feed" get of "plugins/EssentialsSkript/config.yml"
+				if {_Option.feedSign} is "true":
+					set line 1 to "&7[&6&lEssSk&7]"
+					set line 3 to "&8&lFeed"
+					stop
+			if line 3 is "Heal":
+				set {_Option.healSign} to value "Options.Signs.Heal" get of "plugins/EssentialsSkript/config.yml"
+				if {_Option.healSign} is "true":
+					set line 1 to "&7[&6&lEssSk&7]"
+					set line 3 to "&8&lHeal"
+					stop
+		
+on rightclick:
+	block is sign
+	if player has permission "EssSk.signuse":
+		if line 1 is "&7[&6&lEssSk&7]":
+			if line 3 is "&8&lSunny":
+				execute player command "/weather clear"
+				stop
+			if line 3 is "&8&lStorm":
+				execute player command "/weather rain"
+				stop
+			if line 3 is "&8&lNight":
+				execute player command "/night"
+				stop
+			if line 3 is "&8&lDay":
+				execute player command "/day"
+				stop
+			if line 3 is "&8&lSpawn":
+				execute player command "/spawn"
+				stop
+			if line 3 is "&8&lRepair":
+				execute player command "/repair"
+				stop
+			if line 3 is "&8&lWarp":
+				set {_warp} to line 4 of clicked block
+				execute player command "/warp %{_warp}%"
+				stop
+			if line 3 is "&8&lBalance":
+				execute player command "/bal"
+				stop
+			if line 3 is "&8&lFeed":
+				execute player command "/feed"
+				stop
+			if line 3 is "&8&lHeal":
+				execute player command "/heal"
+				stop
+
+				
+				
+				
+				
+#Plugin Commands<---------------#
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^#
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^#
+command /infoEssSk:
+	description: Info
+	trigger:
+		message ""
+		message "&c&l--------------------------------------------------------------------------"
+		message "&b[EssentialsSkript]"
+		message "&bVersion: 12.0"
+		message "&c&l--------------------------------------------------------------------------"
+		stop
+		
+command /EssentialsReload:
+	description: Reload the plugin
+	permission: EssSk.reload
+	trigger:
+		message "&e&l&7[%{essPrefix}%&7] Reloaded."
+		execute console command "skript reload EssentialsSkript"
+		stop
+		
+on join:
+	wait 2 seconds
+	make player execute command "infoEssSk"
+	stop
+	
+command /essentialskript <text>:
+	aliases: EssSk
+	trigger:
+		if arg 1 is "1":
+			message "&b/essentialsskript 1 - This menu." to player
+			message "&c/info&7[%{essPrefix}%&7] - Plugin Info" to player
+			message "&c/Heal - Heals the player." to player
+			message "&c/Broadcast - Broadcast to the whole server." to player
+			message "&c/Feed - Fill your hunger." to player 
+			message "&c/Gmc - Change to Creative." to player 
+			message "&c/Gms - Change to Survival." to player 
+			message "&c/Tp - Teleport to a player." to player 
+			message "&c/Tphere - Teleport a player to you." to player
+			message "&c/Clearchat - Clears Chat!" to player
+			message "&c/Setspawn - Sets the Spawnpoint!" to player
+			message "&c/spawn - takes you to spawn! " to player
+			message "&c/delspawn - Removes the spawnpoint." to player
+			message "&bType /essentialsskript 2 for more commands." to player
+			stop
+		if arg 1 is "2":
+			message "&c/EssentialsReload - Reload the plugin" to player
+			message "&c/sethome - Set your home" to player
+			message "&c/home - Go to your home"
+			message "&c/msg - Message a player" to player
+			message "&c/r - Quick Message a player" to player
+			message "&c/fireball - Shoot a fireball!" to player
+			message "&c/Tpa - Request to teleport." to player
+			message "&c/Tpahere - Request to Teleport a player to you." to player
+			message "&c/tpaccept - Accept a Request to teleport!" to player
+			message "&c/invsee - See another players inventory" to player
+			message "&c/endsee - See another players enderchest" to player
+			message "&c/setwarp - Set a warp." to player
+			message "&c/warp - Warp to a warp" to player
+			message "&c/delwarp - Deletes a warp" to player
+			message "&bType EssentialsSkript 3 for more commands" to player
+			stop
+		if arg 1 is "3":
+			message "&c/workbench - Opens crafting table" to player
+			message "&c/enderchest - Opens the enderchest of a player" to player
+			message "&c/back - Teleport to previous Location" to player
+			message "&c/nick - Nickname yourself!" to player
+			message "&c/realname - Find out a nicknamed person's realname" to player
+			message "&c/eco - Set someone's balance" to player
+			message "&c/bal - Check your balance" to player
+			message "&c/pay - Pay a player a amount a money" to player 
+			message "&c/afk - Go in and out of AFK" to player 
+			message "&c/ping - Pong!" to player 
+			message "&c/Rules - Server Rules" to player
+			message "&c/tree - Creates a random type of tree" to player
+			message "&c/speed - Change speed" to player
+			message "&c/skull - Get a player skull" to player
+			message "&bType /essentialsskript 4 for more commands" to player
+			stop
+		if arg 1 is "4":
+			message "&c/tpall - Teleport all players to you" to player
+			message "&c/lightning - Shoot a lightning Strike!" to player
+			message "&c/compass - Tell your angle" to player
+			message "&c/i - Get a amount of a item" to player
+			message "&c/rain - Toggle Rain" to player
+			message "&c/day - Makes it day" to player
+			message "&c/night - Makes it night" to player
+			message "&c/sun - Clears weather" to player
+			message "&c/repair - Repairs hand" to player
+			message "&c/hat - Item in hand is now your hat" to player
+			message "&c/v - Go into vanish" to player
+			message "&c/freeze - Freeze the player" to player
+			message "&c/unfreeze - Unfreeze a player" to player
+			message "&c/gma - Gamemode Adventure" to player
+			message "&bType /essentialsskript 5 for more commands" to player
+			stop
+		if arg 1 is "5":
+			message "&c/gmsp - Gamemode Spectator" to player
+			message "&c/me - Send a message!" to player
+			message "&c/rules - Check the server rules!" to player
+			message "&c/list - Check who is online" to player
+			message "&c/top - Teleport to the surface" to player
+			message "&c/burn - Set em on Fire!" to player
+			message "&c/extinguish - Cool them off!" to player
+			message "&c/spawnmob - Spawns a Mob" to player
+			message "&c/ignore - Ignores a player" to player
+			message "&c/enchant - Enchants held item!" to player
+			message "&c/sudo - Makes a player run a command" to player
+			message "&c/antioch - Launches Primed TNT" to player
+			message "&c/jump - Teleport to the block your looking at" to player
+			message "&c/seen - See when a player is last online" to player
+			message "&bType /essentialsskript 6 for more commands" to player
+			stop
+		if arg 1 is "6":
+			message "&c/fireball - SHOOT A FIREBALL"
+			message "&c/unbanip - Unban someones IP"
+			message "&c/mute - Mute someone"
+			message "&c/unmute - Unmute someone"
+			message "&c/mail - Send Mail"
+			message "&c/rocket - I BELIEVE I CAN FLY!"
+			message "&c/ridepig - Ride a pig"
+			message "&c/ridecow - Ride a cow"
+			message "&c/ridesheep - Ride a sheep"
+			message "&c/rideenderman - Ride a enderman"
+			message "&c/ridechicken - Ride a chicken"
+			message "&c/explode - Make a explosion on a player"
+			message "&c/kit - Get a kit (Removes all inventory items)"
+			message "&c/kits - View all the kits"
+			message "&bType /essentialsskript 7 for more commands"
+			stop
+		if arg 1 is "7":
+			message "&c/createkit - Make a kit based off your inventory" to player
+			message "&c/delkit - Delete a kit" to player
+			message "&c/God - Become over powerful" to player
+			message "&c/near - See who is near you" to player
+			message "&c/report - Report a player!" to player
+			message "&c/colorchat - Change chat color" to player
+			message "&c/ridehorse - Ride a horse" to player
+			message "&c/lore - Sets the lore of a item" to player
+			message "&c/ridewither - Ride a wither" to player
+			message "&c/ridedragon - Ride a dragon" to player
+			message "&c/infoEssSk - Info about the plugin" to player
+			message "&c/anvil - Open a anvil" to player
+			message "&c/name - Change name of item in hand" to player
+			stop
+
+
+			
+		
+
+		
+#Join & Quit stuff<---------------#		
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^#
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^#
+on first join:
+	if {firstjoin.message} is true:
+		send "&2&lWelcome to the server %player%" #Edit this to whatever you like!
+	if {firstjoin.message} is false:
+		stop
+	else if {firstjoin.message} is not set:
+		set {firstjoin.message} to value "Options.firstjoinmessage" get of "plugins/EssentialsSkript/config.yml"
+		stop
+		
+on join:
+	message "&2%player% &7has Joined!"
+	stop
+	
+on quit:
+	message "&2%player% &7has Quit!"
+	stop
+
+on death:
+	send "&6Do /back to return to your death location." to player
+	stop
+	
+# ON LOAD & CONFIG - by taylorhughes719 (DONT FUCKING TOUCH THIS!)
+on load:
+	send "&c[&6EssentialsSkript&c] &bLoading files..." to console
+	wait 4 ticks
+	if folder "plugins/EssentialsSkript/" doesn't exists:
+		create folder "plugins/EssentialsSkript"
+	if file "plugins/EssentialsSkript/config.yml" doesn't exists:
+		create file "plugins/EssentialsSkript/config.yml"
+		set "Options.Chat.CensoringEnabled" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+		set "Options.Other.RocketLength" to "6" in yaml file "plugins/EssentialsSkript/config.yml"
+		set "Options.Other.FireBallSpeed" to "2" in yaml file "plugins/EssentialsSkript/config.yml"
+		set "Options.Economy.Enabled" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+		set "Options.Chat.AntiSwear" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+		set "Options.pluginblock" to "false" in yaml file "plugins/EssentialsSkript/config.yml"
+		set "Options.firstjoinmessage" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+		set "Options.mail" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+		set "Options.prefix" to "&6&lEssentialsSkript" in yaml file "plugins/EssentialsSkript/config.yml"
+		set "Options.Signs.Repair" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+		set "Options.Signs.Spawn" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+		set "Options.Signs.Balance" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+		set "Options.Signs.Heal" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+		set "Options.Signs.Feed" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+		set "Options.Signs.Warp" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+		set "Options.Signs.Day" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+		set "Options.Signs.Night" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+		set "Options.Signs.Sunny" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+		set "Options.Signs.Storm" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+		if file "plugins/Skript/scripts/Lock-IT.sk" doesn't exists:
+			set "Options.Addons.Lock-IT" to "false" in yaml file "plugins/EssentialsSkript/config.yml"
+		if file "plugins/Skript/scripts/VaultSK.sk" doesn't exists:
+			set "Options.Addons.VaultSK" to "false" in yaml file "plugins/EssentialsSkript/config.yml"
+			send "&c[&6EssentialsSkript&c] No Addons Yet :(" to console
+		set {essPrefix} to value "Options.prefix" get of "plugins/EssentialsSkript/config.yml"
+	else:
+		set "Options.Chat.CensoringEnabled" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+		#set "Options.Other.RocketLength" to "6" in yaml file "plugins/EssentialsSkript/config.yml"
+		#set "Options.Other.FireBallSpeed" to "2" in yaml file "plugins/EssentialsSkript/config.yml"
+		#set "Options.Economy.Enabled" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+		#set "Options.Chat.AntiSwear" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+		#set "Options.pluginblock" to "false" in yaml file "plugins/EssentialsSkript/config.yml"
+		#set "Options.firstjoinmessage" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+		#set "Options.mail" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+		#set "Options.prefix" to "&6&lEssentialsSkript" in yaml file "plugins/EssentialsSkript/config.yml"
+		#set "Options.Signs.Repair" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+		#set "Options.Signs.Spawn" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+		#set "Options.Signs.Balance" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+		#set "Options.Signs.Heal" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+		#set "Options.Signs.Feed" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+		#set "Options.Signs.Warp" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+		#set "Options.Signs.Day" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+		#set "Options.Signs.Night" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+		#set "Options.Signs.Sunny" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+		#set "Options.Signs.Storm" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+		#if file "plugins/Skript/scripts/Lock-IT.sk" doesn't exists:
+		#	set "Options.Addons.Lock-IT" to "false" in yaml file "plugins/EssentialsSkript/config.yml"
+		#if file "plugins/Skript/scripts/VaultSK.sk" doesn't exists:
+		#	set "Options.Addons.VaultSK" to "false" in yaml file "plugins/EssentialsSkript/config.yml"
+		#	send "&c[&6EssentialsSkript&c] No Addons Yet :(" to console
+		set {essPrefix} to value "Options.prefix" get of "plugins/EssentialsSkript/config.yml"
+
+#Addon Support<-------------------#		
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^#
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^#		
+
+#Lock-IT Addon Support
+on load:
+	wait 20 ticks
+	if file "plugins/Skript/scripts/Lock-IT.sk" exists:
+		set "Options.Addons.Lock-IT" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+	if file "plugins/Skript/scripts/VaultSK.sk" exists:
+		set "Options.Addons.VaultSK" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+	send "&c[&6EssentialsSkript&c] ADDONS ENABLED****" to console
+	send "=============================================================================" to console
+	if file "plugins/Skript/scripts/Lock-IT.sk" exists:
+		send "&c[&6EssentialsSkript&c]   - Lock-IT Addon Detected!" to console
+	if file "plugins/Skript/scripts/VaultSK.sk" exists:	
+		send "&c[&6EssentialsSkript&c]   - VaultSK Addon Detected!" to console
+	execute console command "sk reload Lock-IT"
+	execute console command "sk reload VaultSK"
+	
+on right click:
+	if line 1 of block in front of clicked block is "[Private]" or "[private]":
+		set {addon.Lock-IT} to value "Options.Addons.Lock-IT" get of "plugins/EssentialsSkript/config.yml"
+		if {addon.Lock-IT} is false:
+			stop
+		else:
+			set {_attempt} to line 2 of block in front of clicked block
+			set {_attempt} to first 15 characters of {_attempt}
+			replace all " " in {_attempt} with ""
+			set {_attempt} to {_attempt} parsed as a player
+			if {_attempt} is not player:
+				send "&4[&6Lock-IT&4] &cSomeone tried to open a chest that belongs to you!" to {_attempt}
