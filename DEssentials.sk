@@ -1602,70 +1602,70 @@ on sign change:
 		if line 1 is "[dessentials]":
 			if line 3 is "Sunny":
 				if player has permission "dessentials.sign.create.sunny":
-				set {_Option.spawnSign} to value "Options.Signs.Sunny" get of "plugins/DEssentials/config.yml"
+					set {_Option.spawnSign} to value "Options.Signs.Sunny" get of "plugins/DEssentials/config.yml"
 				if {_Option.spawnSign} is "true":
 					set line 1 to "&7[&6&ldessentials&7]"
 					set line 3 to "&8&lSunny"
 					stop
 			if line 3 is "Storm":
 				if player has permission "dessentials.sign.create.storm":
-				set {_Option.spawnSign} to value "Options.Signs.Storm" get of "plugins/DEssentials/config.yml"
+					set {_Option.spawnSign} to value "Options.Signs.Storm" get of "plugins/DEssentials/config.yml"
 				if {_Option.spawnSign} is "true":
 					set line 1 to "&7[&6&ldessentials&7]"
 					set line 3 to "&8&lStorm"
 					stop
 			if line 3 is "Night":
 				if player has permission "dessentials.sign.create.night":
-				set {_Option.spawnSign} to value "Options.Signs.Night" get of "plugins/DEssentials/config.yml"
+					set {_Option.spawnSign} to value "Options.Signs.Night" get of "plugins/DEssentials/config.yml"
 				if {_Option.spawnSign} is "true":
 					set line 1 to "&7[&6&ldessentials&7]"
 					set line 3 to "&8&lNight"
 					stop
 			if line 3 is "Day":
 				if player has permission "dessentials.sign.create.day":
-				set {_Option.spawnSign} to value "Options.Signs.Day" get of "plugins/DEssentials/config.yml"
+					set {_Option.spawnSign} to value "Options.Signs.Day" get of "plugins/DEssentials/config.yml"
 				if {_Option.spawnSign} is "true":
 					set line 1 to "&7[&6&ldessentials&7]"
 					set line 3 to "&8&lDay"
 					stop
 			if line 3 is "Spawn":
 				if player has permission "dessentials.sign.create.spawn":
-				set {_Option.spawnSign} to value "Options.Signs.Spawn" get of "plugins/DEssentials/config.yml"
+					set {_Option.spawnSign} to value "Options.Signs.Spawn" get of "plugins/DEssentials/config.yml"
 				if {_Option.spawnSign} is "true":
 					set line 1 to "&7[&6&ldessentials&7]"
 					set line 3 to "&8&lSpawn"
 					stop
 			if line 3 is "Repair":
 				if player has permission "dessentials.sign.create.repair":
-				set {_Option.repairSign} to value "Options.Signs.Repair" get of "plugins/DEssentials/config.yml"
+					set {_Option.repairSign} to value "Options.Signs.Repair" get of "plugins/DEssentials/config.yml"
 				if {_Option.repairSign} is "true":
 					set line 1 to "&7[&6&ldessentials&7]"
 					set line 3 to "&8&lRepair"
 					stop
 			if line 3 is "Warp":
 				if player has permission "dessentials.sign.create.warp":
-				set {_Option.warpSign} to value "Options.Signs.Warp" get of "plugins/DEssentials/config.yml"
+					set {_Option.warpSign} to value "Options.Signs.Warp" get of "plugins/DEssentials/config.yml"
 				if {_Option.warpSign} is "true":
 					set line 1 to "&7[&6&ldessentials&7]"
 					set line 3 to "&8&lWarp"
 					stop
 			if line 3 is "Balance":
 				if player has permission "dessentials.sign.create.balance":
-				set {_Option.balanceSign} to value "Options.Signs.Balance" get of "plugins/DEssentials/config.yml"
+					set {_Option.balanceSign} to value "Options.Signs.Balance" get of "plugins/DEssentials/config.yml"
 				if {_Option.balanceSign} is "true":
 					set line 1 to "&7[&6&ldessentials&7]"
 					set line 3 to "&8&lBalance"
 					stop
 			if line 3 is "Feed":
 				if player has permission "dessentials.sign.create.feed":
-				set {_Option.feedSign} to value "Options.Signs.Feed" get of "plugins/DEssentials/config.yml"
+					set {_Option.feedSign} to value "Options.Signs.Feed" get of "plugins/DEssentials/config.yml"
 				if {_Option.feedSign} is "true":
 					set line 1 to "&7[&6&ldessentials&7]"
 					set line 3 to "&8&lFeed"
 					stop
 			if line 3 is "Heal":
 				if player has permission "dessentials.sign.create.heal":
-				set {_Option.healSign} to value "Options.Signs.Heal" get of "plugins/DEssentials/config.yml"
+					set {_Option.healSign} to value "Options.Signs.Heal" get of "plugins/DEssentials/config.yml"
 				if {_Option.healSign} is "true":
 					set line 1 to "&7[&6&ldessentials&7]"
 					set line 3 to "&8&lHeal"
@@ -1679,45 +1679,45 @@ on rightclick:
 		if line 1 is "&7[&6&ldessentials&7]":
 			if line 3 is "&8&lSunny":
 				if player has permission "dessentials.sign.use.weather":
-				execute player command "/weather clear"
-				stop
+					execute player command "/weather clear"
+					stop
 			if line 3 is "&8&lStorm":
 				if player has permission "dessentials.sign.use.weather":
-				execute player command "/weather rain"
-				stop
+					execute player command "/weather rain"
+					stop
 			if line 3 is "&8&lNight":
 				if player has permission "dessentials.sign.use.night":
-				execute player command "/night"
-				stop
+					execute player command "/night"
+					stop
 			if line 3 is "&8&lDay":
 				if player has permission "dessentials.sign.use.day":
-				execute player command "/day"
-				stop
+					execute player command "/day"
+					stop
 			if line 3 is "&8&lSpawn":
 				if player has permission "dessentials.sign.use.spawn":
-				execute player command "/spawn"
-				stop
+					execute player command "/spawn"
+					stop
 			if line 3 is "&8&lRepair":
 				if player has permission "dessentials.sign.use.repair":
-				execute player command "/repair"
-				stop
+					execute player command "/repair"
+					stop
 			if line 3 is "&8&lWarp":
 				if player has permission "dessentials.sign.use.warp":
-				set {_warp} to line 4 of clicked block
-				execute player command "/warp %{_warp}%"
-				stop
+					set {_warp} to line 4 of clicked block
+					execute player command "/warp %{_warp}%"
+					stop
 			if line 3 is "&8&lBalance":
 				if player has permission "dessentials.sign.use.balance":
-				execute player command "/bal"
-				stop
+					execute player command "/bal"
+					stop
 			if line 3 is "&8&lFeed":
 				if player has permission "dessentials.sign.use.feed":
-				execute player command "/feed"
-				stop
+					execute player command "/feed"
+					stop
 			if line 3 is "&8&lHeal":
 				if player has permission "dessentials.sign.use.heal":
-				execute player command "/heal"
-				stop
+					execute player command "/heal"
+					stop
 			else:
 				send "%{essPrefix}% &cYou can't use that sign!"
 
@@ -1907,57 +1907,7 @@ on load:
 	if folder "plugins/DEssentials/" doesn't exists:
 		create folder "plugins/DEssentials"
 	if file "plugins/DEssentials/config.yml" doesn't exists:
-		create file "plugins/DEssentials/config.yml"
-		set "Options.Chat.CensoringEnabled" to "true" in yaml file "plugins/DEssentials/config.yml"
-		set "Options.Other.RocketLength" to "6" in yaml file "plugins/DEssentials/config.yml"
-		set "Options.Other.FireBallSpeed" to "2" in yaml file "plugins/DEssentials/config.yml"
-		set "Options.Economy.Enabled" to "true" in yaml file "plugins/DEssentials/config.yml"
-		set "Options.Chat.AntiSwear" to "true" in yaml file "plugins/DEssentials/config.yml"
-		set "Options.pluginblock" to "false" in yaml file "plugins/DEssentials/config.yml"
-		set "Options.firstjoinmessage" to "true" in yaml file "plugins/DEssentials/config.yml"
-		set "Options.mail" to "true" in yaml file "plugins/DEssentials/config.yml"
-		set "Options.prefix" to "&6&lDEssentials" in yaml file "plugins/DEssentials/config.yml"
-		set "Options.Signs.Repair" to "true" in yaml file "plugins/DEssentials/config.yml"
-		set "Options.Signs.Spawn" to "true" in yaml file "plugins/DEssentials/config.yml"
-		set "Options.Signs.Balance" to "true" in yaml file "plugins/DEssentials/config.yml"
-		set "Options.Signs.Heal" to "true" in yaml file "plugins/DEssentials/config.yml"
-		set "Options.Signs.Feed" to "true" in yaml file "plugins/DEssentials/config.yml"
-		set "Options.Signs.Warp" to "true" in yaml file "plugins/DEssentials/config.yml"
-		set "Options.Signs.Day" to "true" in yaml file "plugins/DEssentials/config.yml"
-		set "Options.Signs.Night" to "true" in yaml file "plugins/DEssentials/config.yml"
-		set "Options.Signs.Sunny" to "true" in yaml file "plugins/DEssentials/config.yml"
-		set "Options.Signs.Storm" to "true" in yaml file "plugins/DEssentials/config.yml"
-		if file "plugins/Skript/scripts/Lock-IT.sk" doesn't exists:
-			set "Options.Addons.Lock-IT" to "false" in yaml file "plugins/DEssentials/config.yml"
-		if file "plugins/Skript/scripts/VaultSK.sk" doesn't exists:
-			set "Options.Addons.VaultSK" to "false" in yaml file "plugins/DEssentials/config.yml"
-			send "&c[&6DEssentials&c] No Addons Yet :(" to console
-		set {essPrefix} to value "Options.prefix" get of "plugins/DEssentials/config.yml"
-	else:
-		set "Options.Chat.CensoringEnabled" to "true" in yaml file "plugins/DEssentials/config.yml"
-		#set "Options.Other.RocketLength" to "6" in yaml file "plugins/DEssentials/config.yml"
-		#set "Options.Other.FireBallSpeed" to "2" in yaml file "plugins/DEssentials/config.yml"
-		#set "Options.Economy.Enabled" to "true" in yaml file "plugins/DEssentials/config.yml"
-		#set "Options.Chat.AntiSwear" to "true" in yaml file "plugins/DEssentials/config.yml"
-		#set "Options.pluginblock" to "false" in yaml file "plugins/DEssentials/config.yml"
-		#set "Options.firstjoinmessage" to "true" in yaml file "plugins/DEssentials/config.yml"
-		#set "Options.mail" to "true" in yaml file "plugins/DEssentials/config.yml"
-		#set "Options.prefix" to "&6&lDEssentials" in yaml file "plugins/DEssentials/config.yml"
-		#set "Options.Signs.Repair" to "true" in yaml file "plugins/DEssentials/config.yml"
-		#set "Options.Signs.Spawn" to "true" in yaml file "plugins/DEssentials/config.yml"
-		#set "Options.Signs.Balance" to "true" in yaml file "plugins/DEssentials/config.yml"
-		#set "Options.Signs.Heal" to "true" in yaml file "plugins/DEssentials/config.yml"
-		#set "Options.Signs.Feed" to "true" in yaml file "plugins/DEssentials/config.yml"
-		#set "Options.Signs.Warp" to "true" in yaml file "plugins/DEssentials/config.yml"
-		#set "Options.Signs.Day" to "true" in yaml file "plugins/DEssentials/config.yml"
-		#set "Options.Signs.Night" to "true" in yaml file "plugins/DEssentials/config.yml"
-		#set "Options.Signs.Sunny" to "true" in yaml file "plugins/DEssentials/config.yml"
-		#set "Options.Signs.Storm" to "true" in yaml file "plugins/DEssentials/config.yml"
-		#if file "plugins/Skript/scripts/Lock-IT.sk" doesn't exists:
-		#	set "Options.Addons.Lock-IT" to "false" in yaml file "plugins/DEssentials/config.yml"
-		#if file "plugins/Skript/scripts/VaultSK.sk" doesn't exists:
-		#	set "Options.Addons.VaultSK" to "false" in yaml file "plugins/DEssentials/config.yml"
-		#	send "&c[&6DEssentials&c] No Addons Yet :(" to console
+		download from "https://bit.ly/2N8mED5" to "/plugins/DEssentials/config.yml"
 		set {essPrefix} to value "Options.prefix" get of "plugins/DEssentials/config.yml"
 
 #Addon Support<-------------------#		
