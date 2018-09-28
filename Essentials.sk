@@ -20,7 +20,7 @@ options:
 	spamcooldown: 4
 
 	
-variables: #Variables do not touch most of these only the ones where it says
+variables:
 
 	{plugins.on} = "false"
 
@@ -251,7 +251,7 @@ command /helpop <text>:
 command /setworth [<item type = %tool of player%>] <number>:
 	permission: dessentials.setworth
 	trigger:	
-		set {VaultSK.support} to value "Options.Addons.VaultSK" get of "plugins/EssentialsSkript/config.yml"
+		set {VaultSK.support} to value "Options.Addons.VaultSK" get of "plugins/DEssentials/config.yml"
 		if {VaultSK.support} is "true":
 			#set {dessentials.price.%argument 1%} to argument 2
 			set "Worth.%arg-1%" to "%arg-2%" in yaml file "plugins/VaultSK/worth.yml"
@@ -264,7 +264,7 @@ command /setworth [<item type = %tool of player%>] <number>:
 command /worth [<item type = %tool of player%>]:
 	permission: dessentials.worth
 	trigger:	
-		set {VaultSK.support} to value "Options.Addons.VaultSK" get of "plugins/EssentialsSkript/config.yml"
+		set {VaultSK.support} to value "Options.Addons.VaultSK" get of "plugins/DEssentials/config.yml"
 		if {VaultSK.support} is "true":
 			#if {dessentials.price.%argument 1%} is not set:
 			#	message "&7[%{essPrefix}%&7] &7This item can not be sold to the server."
@@ -281,9 +281,9 @@ command /bal:
 	aliases: Balance
 	permission: dessentials.bal
 	Trigger:
-		set {VaultSK.support} to value "Options.Addons.VaultSK" get of "plugins/EssentialsSkript/config.yml"
+		set {VaultSK.support} to value "Options.Addons.VaultSK" get of "plugins/DEssentials/config.yml"
 		if {VaultSK.support} is "true":
-			set {economy.on} to value "Options.Economy.Enabled" get of "plugins/EssentialsSkript/config.yml"
+			set {economy.on} to value "Options.Economy.Enabled" get of "plugins/DEssentials/config.yml"
 			if {economy.on} is "true":
 				message "&aBalance: &c$%{balance::%player%}%"
 				stop
@@ -294,9 +294,9 @@ command /bal:
 command /pay <player> <number>:
 	permission: dessentials.pay
 	Trigger:
-		set {VaultSK.support} to value "Options.Addons.VaultSK" get of "plugins/EssentialsSkript/config.yml"
+		set {VaultSK.support} to value "Options.Addons.VaultSK" get of "plugins/DEssentials/config.yml"
 		if {VaultSK.support} is "true":
-			set {economy.on} to value "Options.Economy.Enabled" get of "plugins/EssentialsSkript/config.yml"
+			set {economy.on} to value "Options.Economy.Enabled" get of "plugins/DEssentials/config.yml"
 			if {economy.on} is "true":
 				if arg 1 is player:
 					message "&cYou can't pay yourself!"
@@ -316,9 +316,9 @@ command /eco <text> <player> <number>:
 	usage: /eco give,set,reset <player> <amount>
 	permission: dessentials.eco
 	Trigger:
-		set {VaultSK.support} to value "Options.Addons.VaultSK" get of "plugins/EssentialsSkript/config.yml"
+		set {VaultSK.support} to value "Options.Addons.VaultSK" get of "plugins/DEssentials/config.yml"
 		if {VaultSK.support} is "true":
-			set {economy.on} to value "Options.Economy.Enabled" get of "plugins/EssentialsSkript/config.yml"
+			set {economy.on} to value "Options.Economy.Enabled" get of "plugins/DEssentials/config.yml"
 			if {economy.on} is "true":
 				if arg 1 is "give":
 					add arg 3 to {balance::%arg 2%}
@@ -641,7 +641,7 @@ command /jump:
 command /fireball:
 	permission: dessentials.fireball
 	trigger:
-		set {FireBallSpeed} to value "Options.Other.FireBallSpeed" get of "plugins/EssentialsSkript/config.yml"
+		set {FireBallSpeed} to value "Options.Other.FireBallSpeed" get of "plugins/DEssentials/config.yml"
 		shoot a fireball at speed {FireBallSpeed}
 		stop
 		
@@ -1172,7 +1172,7 @@ command /mail [<text=info>] [<integer>] [<offlineplayer>] [<text>]:
 		if {mail.on} is false:
 			stop
 		if {mail.on} is not set:
-			set {mail.on} to value "Options.mail" get of "plugins/EssentialsSkript/config.yml"
+			set {mail.on} to value "Options.mail" get of "plugins/DEssentials/config.yml"
 			stop
 			
 command /seen [<offlineplayer>]:
@@ -1435,7 +1435,7 @@ command /plugins:
 		else if {plugins.on} is "false":
 			stop
 		if {plugins.on} is not set:
-			set {plugins.on} to value "Options.Grief" get of "plugins/EssentialsSkript/config.yml"
+			set {plugins.on} to value "Options.Grief" get of "plugins/DEssentials/config.yml"
 			stop
 		
 command /pl: #Edit the number of plugins and plugin names in both of these #
@@ -1445,11 +1445,11 @@ command /pl: #Edit the number of plugins and plugin names in both of these #
 		else if {plugins.on} is "false":
 			stop
 		if {plugins.on} is not set:
-			set {plugins.on} to value "Options.pluginblock" get of "plugins/EssentialsSkript/config.yml"
+			set {plugins.on} to value "Options.pluginblock" get of "plugins/DEssentials/config.yml"
 			stop
 		
 on chat:
-	set {anticuss.on} to value "Options.Chat.AntiSwear" get of "plugins/EssentialsSkript/config.yml"
+	set {anticuss.on} to value "Options.Chat.AntiSwear" get of "plugins/DEssentials/config.yml"
 	if {anticuss.on} is "true":
 		replace all "Play." in message with "{@Censored}" #Change all of these to whatever
 		replace all "play." in message with "{@Censored}"
@@ -1594,61 +1594,61 @@ on sign change:
 	if player has permission "dessentials.create":
 		if line 1 is "[dessentials]":
 			if line 3 is "Sunny":
-				set {_Option.spawnSign} to value "Options.Signs.Sunny" get of "plugins/EssentialsSkript/config.yml"
+				set {_Option.spawnSign} to value "Options.Signs.Sunny" get of "plugins/DEssentials/config.yml"
 				if {_Option.spawnSign} is "true":
 					set line 1 to "&7[&6&ldessentials&7]"
 					set line 3 to "&8&lSunny"
 					stop
 			if line 3 is "Storm":
-				set {_Option.spawnSign} to value "Options.Signs.Storm" get of "plugins/EssentialsSkript/config.yml"
+				set {_Option.spawnSign} to value "Options.Signs.Storm" get of "plugins/DEssentials/config.yml"
 				if {_Option.spawnSign} is "true":
 					set line 1 to "&7[&6&ldessentials&7]"
 					set line 3 to "&8&lStorm"
 					stop
 			if line 3 is "Night":
-				set {_Option.spawnSign} to value "Options.Signs.Night" get of "plugins/EssentialsSkript/config.yml"
+				set {_Option.spawnSign} to value "Options.Signs.Night" get of "plugins/DEssentials/config.yml"
 				if {_Option.spawnSign} is "true":
 					set line 1 to "&7[&6&ldessentials&7]"
 					set line 3 to "&8&lNight"
 					stop
 			if line 3 is "Day":
-				set {_Option.spawnSign} to value "Options.Signs.Day" get of "plugins/EssentialsSkript/config.yml"
+				set {_Option.spawnSign} to value "Options.Signs.Day" get of "plugins/DEssentials/config.yml"
 				if {_Option.spawnSign} is "true":
 					set line 1 to "&7[&6&ldessentials&7]"
 					set line 3 to "&8&lDay"
 					stop
 			if line 3 is "Spawn":
-				set {_Option.spawnSign} to value "Options.Signs.Spawn" get of "plugins/EssentialsSkript/config.yml"
+				set {_Option.spawnSign} to value "Options.Signs.Spawn" get of "plugins/DEssentials/config.yml"
 				if {_Option.spawnSign} is "true":
 					set line 1 to "&7[&6&ldessentials&7]"
 					set line 3 to "&8&lSpawn"
 					stop
 			if line 3 is "Repair":
-				set {_Option.repairSign} to value "Options.Signs.Repair" get of "plugins/EssentialsSkript/config.yml"
+				set {_Option.repairSign} to value "Options.Signs.Repair" get of "plugins/DEssentials/config.yml"
 				if {_Option.repairSign} is "true":
 					set line 1 to "&7[&6&ldessentials&7]"
 					set line 3 to "&8&lRepair"
 					stop
 			if line 3 is "Warp":
-				set {_Option.warpSign} to value "Options.Signs.Warp" get of "plugins/EssentialsSkript/config.yml"
+				set {_Option.warpSign} to value "Options.Signs.Warp" get of "plugins/DEssentials/config.yml"
 				if {_Option.warpSign} is "true":
 					set line 1 to "&7[&6&ldessentials&7]"
 					set line 3 to "&8&lWarp"
 					stop
 			if line 3 is "Balance":
-				set {_Option.balanceSign} to value "Options.Signs.Balance" get of "plugins/EssentialsSkript/config.yml"
+				set {_Option.balanceSign} to value "Options.Signs.Balance" get of "plugins/DEssentials/config.yml"
 				if {_Option.balanceSign} is "true":
 					set line 1 to "&7[&6&ldessentials&7]"
 					set line 3 to "&8&lBalance"
 					stop
 			if line 3 is "Feed":
-				set {_Option.feedSign} to value "Options.Signs.Feed" get of "plugins/EssentialsSkript/config.yml"
+				set {_Option.feedSign} to value "Options.Signs.Feed" get of "plugins/DEssentials/config.yml"
 				if {_Option.feedSign} is "true":
 					set line 1 to "&7[&6&ldessentials&7]"
 					set line 3 to "&8&lFeed"
 					stop
 			if line 3 is "Heal":
-				set {_Option.healSign} to value "Options.Signs.Heal" get of "plugins/EssentialsSkript/config.yml"
+				set {_Option.healSign} to value "Options.Signs.Heal" get of "plugins/DEssentials/config.yml"
 				if {_Option.healSign} is "true":
 					set line 1 to "&7[&6&ldessentials&7]"
 					set line 3 to "&8&lHeal"
@@ -1702,7 +1702,7 @@ command /infodessentials:
 	trigger:
 		message ""
 		message "&c&l--------------------------------------------------------------------------"
-		message "&b[EssentialsSkript]"
+		message "&b[DEssentials]"
 		message "&bVersion: 12.0"
 		message "&c&l--------------------------------------------------------------------------"
 		stop
@@ -1712,7 +1712,7 @@ command /EssentialsReload:
 	permission: dessentials.reload
 	trigger:
 		message "&e&l&7[%{essPrefix}%&7] Reloaded."
-		execute console command "skript reload EssentialsSkript"
+		execute console command "skript reload DEssentials"
 		stop
 		
 on join:
@@ -1720,11 +1720,11 @@ on join:
 	make player execute command "infodessentials"
 	stop
 	
-command /essentialskript <text>:
-	aliases: dessentials
+command /dessentials <text>:
+	aliases: de
 	trigger:
 		if arg 1 is "1":
-			message "&b/essentialsskript 1 - This menu." to player
+			message "&b/DEssentials 1 - This menu." to player
 			message "&c/info&7[%{essPrefix}%&7] - Plugin Info" to player
 			message "&c/Heal - Heals the player." to player
 			message "&c/Broadcast - Broadcast to the whole server." to player
@@ -1737,7 +1737,7 @@ command /essentialskript <text>:
 			message "&c/Setspawn - Sets the Spawnpoint!" to player
 			message "&c/spawn - takes you to spawn! " to player
 			message "&c/delspawn - Removes the spawnpoint." to player
-			message "&bType /essentialsskript 2 for more commands." to player
+			message "&bType /DEssentials 2 for more commands." to player
 			stop
 		if arg 1 is "2":
 			message "&c/EssentialsReload - Reload the plugin" to player
@@ -1754,7 +1754,7 @@ command /essentialskript <text>:
 			message "&c/setwarp - Set a warp." to player
 			message "&c/warp - Warp to a warp" to player
 			message "&c/delwarp - Deletes a warp" to player
-			message "&bType EssentialsSkript 3 for more commands" to player
+			message "&bType DEssentials 3 for more commands" to player
 			stop
 		if arg 1 is "3":
 			message "&c/workbench - Opens crafting table" to player
@@ -1771,7 +1771,7 @@ command /essentialskript <text>:
 			message "&c/tree - Creates a random type of tree" to player
 			message "&c/speed - Change speed" to player
 			message "&c/skull - Get a player skull" to player
-			message "&bType /essentialsskript 4 for more commands" to player
+			message "&bType /DEssentials 4 for more commands" to player
 			stop
 		if arg 1 is "4":
 			message "&c/tpall - Teleport all players to you" to player
@@ -1788,7 +1788,7 @@ command /essentialskript <text>:
 			message "&c/freeze - Freeze the player" to player
 			message "&c/unfreeze - Unfreeze a player" to player
 			message "&c/gma - Gamemode Adventure" to player
-			message "&bType /essentialsskript 5 for more commands" to player
+			message "&bType /DEssentials 5 for more commands" to player
 			stop
 		if arg 1 is "5":
 			message "&c/gmsp - Gamemode Spectator" to player
@@ -1805,7 +1805,7 @@ command /essentialskript <text>:
 			message "&c/antioch - Launches Primed TNT" to player
 			message "&c/jump - Teleport to the block your looking at" to player
 			message "&c/seen - See when a player is last online" to player
-			message "&bType /essentialsskript 6 for more commands" to player
+			message "&bType /DEssentials 6 for more commands" to player
 			stop
 		if arg 1 is "6":
 			message "&c/fireball - SHOOT A FIREBALL"
@@ -1822,7 +1822,7 @@ command /essentialskript <text>:
 			message "&c/explode - Make a explosion on a player"
 			message "&c/kit - Get a kit (Removes all inventory items)"
 			message "&c/kits - View all the kits"
-			message "&bType /essentialsskript 7 for more commands"
+			message "&bType /DEssentials 7 for more commands"
 			stop
 		if arg 1 is "7":
 			message "&c/createkit - Make a kit based off your inventory" to player
@@ -1854,7 +1854,7 @@ on first join:
 	if {firstjoin.message} is false:
 		stop
 	else if {firstjoin.message} is not set:
-		set {firstjoin.message} to value "Options.firstjoinmessage" get of "plugins/EssentialsSkript/config.yml"
+		set {firstjoin.message} to value "Options.firstjoinmessage" get of "plugins/DEssentials/config.yml"
 		stop
 		
 on join:
@@ -1871,63 +1871,63 @@ on death:
 	
 # ON LOAD & CONFIG - by taylorhughes719 (DONT FUCKING TOUCH THIS!)
 on load:
-	send "&c[&6EssentialsSkript&c] &bLoading files..." to console
+	send "&c[&6DEssentials&c] &bLoading files..." to console
 	wait 4 ticks
-	if folder "plugins/EssentialsSkript/" doesn't exists:
-		create folder "plugins/EssentialsSkript"
-	if file "plugins/EssentialsSkript/config.yml" doesn't exists:
-		create file "plugins/EssentialsSkript/config.yml"
-		set "Options.Chat.CensoringEnabled" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
-		set "Options.Other.RocketLength" to "6" in yaml file "plugins/EssentialsSkript/config.yml"
-		set "Options.Other.FireBallSpeed" to "2" in yaml file "plugins/EssentialsSkript/config.yml"
-		set "Options.Economy.Enabled" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
-		set "Options.Chat.AntiSwear" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
-		set "Options.pluginblock" to "false" in yaml file "plugins/EssentialsSkript/config.yml"
-		set "Options.firstjoinmessage" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
-		set "Options.mail" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
-		set "Options.prefix" to "&6&lEssentialsSkript" in yaml file "plugins/EssentialsSkript/config.yml"
-		set "Options.Signs.Repair" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
-		set "Options.Signs.Spawn" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
-		set "Options.Signs.Balance" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
-		set "Options.Signs.Heal" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
-		set "Options.Signs.Feed" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
-		set "Options.Signs.Warp" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
-		set "Options.Signs.Day" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
-		set "Options.Signs.Night" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
-		set "Options.Signs.Sunny" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
-		set "Options.Signs.Storm" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+	if folder "plugins/DEssentials/" doesn't exists:
+		create folder "plugins/DEssentials"
+	if file "plugins/DEssentials/config.yml" doesn't exists:
+		create file "plugins/DEssentials/config.yml"
+		set "Options.Chat.CensoringEnabled" to "true" in yaml file "plugins/DEssentials/config.yml"
+		set "Options.Other.RocketLength" to "6" in yaml file "plugins/DEssentials/config.yml"
+		set "Options.Other.FireBallSpeed" to "2" in yaml file "plugins/DEssentials/config.yml"
+		set "Options.Economy.Enabled" to "true" in yaml file "plugins/DEssentials/config.yml"
+		set "Options.Chat.AntiSwear" to "true" in yaml file "plugins/DEssentials/config.yml"
+		set "Options.pluginblock" to "false" in yaml file "plugins/DEssentials/config.yml"
+		set "Options.firstjoinmessage" to "true" in yaml file "plugins/DEssentials/config.yml"
+		set "Options.mail" to "true" in yaml file "plugins/DEssentials/config.yml"
+		set "Options.prefix" to "&6&lDEssentials" in yaml file "plugins/DEssentials/config.yml"
+		set "Options.Signs.Repair" to "true" in yaml file "plugins/DEssentials/config.yml"
+		set "Options.Signs.Spawn" to "true" in yaml file "plugins/DEssentials/config.yml"
+		set "Options.Signs.Balance" to "true" in yaml file "plugins/DEssentials/config.yml"
+		set "Options.Signs.Heal" to "true" in yaml file "plugins/DEssentials/config.yml"
+		set "Options.Signs.Feed" to "true" in yaml file "plugins/DEssentials/config.yml"
+		set "Options.Signs.Warp" to "true" in yaml file "plugins/DEssentials/config.yml"
+		set "Options.Signs.Day" to "true" in yaml file "plugins/DEssentials/config.yml"
+		set "Options.Signs.Night" to "true" in yaml file "plugins/DEssentials/config.yml"
+		set "Options.Signs.Sunny" to "true" in yaml file "plugins/DEssentials/config.yml"
+		set "Options.Signs.Storm" to "true" in yaml file "plugins/DEssentials/config.yml"
 		if file "plugins/Skript/scripts/Lock-IT.sk" doesn't exists:
-			set "Options.Addons.Lock-IT" to "false" in yaml file "plugins/EssentialsSkript/config.yml"
+			set "Options.Addons.Lock-IT" to "false" in yaml file "plugins/DEssentials/config.yml"
 		if file "plugins/Skript/scripts/VaultSK.sk" doesn't exists:
-			set "Options.Addons.VaultSK" to "false" in yaml file "plugins/EssentialsSkript/config.yml"
-			send "&c[&6EssentialsSkript&c] No Addons Yet :(" to console
-		set {essPrefix} to value "Options.prefix" get of "plugins/EssentialsSkript/config.yml"
+			set "Options.Addons.VaultSK" to "false" in yaml file "plugins/DEssentials/config.yml"
+			send "&c[&6DEssentials&c] No Addons Yet :(" to console
+		set {essPrefix} to value "Options.prefix" get of "plugins/DEssentials/config.yml"
 	else:
-		set "Options.Chat.CensoringEnabled" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
-		#set "Options.Other.RocketLength" to "6" in yaml file "plugins/EssentialsSkript/config.yml"
-		#set "Options.Other.FireBallSpeed" to "2" in yaml file "plugins/EssentialsSkript/config.yml"
-		#set "Options.Economy.Enabled" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
-		#set "Options.Chat.AntiSwear" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
-		#set "Options.pluginblock" to "false" in yaml file "plugins/EssentialsSkript/config.yml"
-		#set "Options.firstjoinmessage" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
-		#set "Options.mail" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
-		#set "Options.prefix" to "&6&lEssentialsSkript" in yaml file "plugins/EssentialsSkript/config.yml"
-		#set "Options.Signs.Repair" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
-		#set "Options.Signs.Spawn" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
-		#set "Options.Signs.Balance" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
-		#set "Options.Signs.Heal" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
-		#set "Options.Signs.Feed" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
-		#set "Options.Signs.Warp" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
-		#set "Options.Signs.Day" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
-		#set "Options.Signs.Night" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
-		#set "Options.Signs.Sunny" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
-		#set "Options.Signs.Storm" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
+		set "Options.Chat.CensoringEnabled" to "true" in yaml file "plugins/DEssentials/config.yml"
+		#set "Options.Other.RocketLength" to "6" in yaml file "plugins/DEssentials/config.yml"
+		#set "Options.Other.FireBallSpeed" to "2" in yaml file "plugins/DEssentials/config.yml"
+		#set "Options.Economy.Enabled" to "true" in yaml file "plugins/DEssentials/config.yml"
+		#set "Options.Chat.AntiSwear" to "true" in yaml file "plugins/DEssentials/config.yml"
+		#set "Options.pluginblock" to "false" in yaml file "plugins/DEssentials/config.yml"
+		#set "Options.firstjoinmessage" to "true" in yaml file "plugins/DEssentials/config.yml"
+		#set "Options.mail" to "true" in yaml file "plugins/DEssentials/config.yml"
+		#set "Options.prefix" to "&6&lDEssentials" in yaml file "plugins/DEssentials/config.yml"
+		#set "Options.Signs.Repair" to "true" in yaml file "plugins/DEssentials/config.yml"
+		#set "Options.Signs.Spawn" to "true" in yaml file "plugins/DEssentials/config.yml"
+		#set "Options.Signs.Balance" to "true" in yaml file "plugins/DEssentials/config.yml"
+		#set "Options.Signs.Heal" to "true" in yaml file "plugins/DEssentials/config.yml"
+		#set "Options.Signs.Feed" to "true" in yaml file "plugins/DEssentials/config.yml"
+		#set "Options.Signs.Warp" to "true" in yaml file "plugins/DEssentials/config.yml"
+		#set "Options.Signs.Day" to "true" in yaml file "plugins/DEssentials/config.yml"
+		#set "Options.Signs.Night" to "true" in yaml file "plugins/DEssentials/config.yml"
+		#set "Options.Signs.Sunny" to "true" in yaml file "plugins/DEssentials/config.yml"
+		#set "Options.Signs.Storm" to "true" in yaml file "plugins/DEssentials/config.yml"
 		#if file "plugins/Skript/scripts/Lock-IT.sk" doesn't exists:
-		#	set "Options.Addons.Lock-IT" to "false" in yaml file "plugins/EssentialsSkript/config.yml"
+		#	set "Options.Addons.Lock-IT" to "false" in yaml file "plugins/DEssentials/config.yml"
 		#if file "plugins/Skript/scripts/VaultSK.sk" doesn't exists:
-		#	set "Options.Addons.VaultSK" to "false" in yaml file "plugins/EssentialsSkript/config.yml"
-		#	send "&c[&6EssentialsSkript&c] No Addons Yet :(" to console
-		set {essPrefix} to value "Options.prefix" get of "plugins/EssentialsSkript/config.yml"
+		#	set "Options.Addons.VaultSK" to "false" in yaml file "plugins/DEssentials/config.yml"
+		#	send "&c[&6DEssentials&c] No Addons Yet :(" to console
+		set {essPrefix} to value "Options.prefix" get of "plugins/DEssentials/config.yml"
 
 #Addon Support<-------------------#		
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^#
@@ -1936,22 +1936,22 @@ on load:
 #Lock-IT Addon Support
 on load:
 	wait 20 ticks
-	if file "plugins/Skript/scripts/Lock-IT.sk" exists:
-		set "Options.Addons.Lock-IT" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
-	if file "plugins/Skript/scripts/VaultSK.sk" exists:
-		set "Options.Addons.VaultSK" to "true" in yaml file "plugins/EssentialsSkript/config.yml"
-	send "&c[&6EssentialsSkript&c] ADDONS ENABLED****" to console
+	if file "plugins/Skript/scripts/lock-it.sk" exists:
+		set "Options.Addons.Lock-IT" to "true" in yaml file "plugins/DEssentials/config.yml"
+	if file "plugins/Skript/scripts/vaultsk.sk" exists:
+		set "Options.Addons.VaultSK" to "true" in yaml file "plugins/DEssentials/config.yml"
+	send "&c[&6DEssentials&c] ADDONS ENABLED****" to console
 	send "=============================================================================" to console
-	if file "plugins/Skript/scripts/Lock-IT.sk" exists:
-		send "&c[&6EssentialsSkript&c]   - Lock-IT Addon Detected!" to console
-	if file "plugins/Skript/scripts/VaultSK.sk" exists:	
-		send "&c[&6EssentialsSkript&c]   - VaultSK Addon Detected!" to console
-	execute console command "sk reload Lock-IT"
-	execute console command "sk reload VaultSK"
+	if file "plugins/Skript/scripts/lock-it.sk" exists:
+		send "&c[&6DEssentials&c]   - Lock-IT Addon Detected!" to console
+	if file "plugins/Skript/scripts/vaultsk.sk" exists:	
+		send "&c[&6DEssentials&c]   - VaultSK Addon Detected!" to console
+	execute console command "sk reload lock-it"
+	execute console command "sk reload vaultsk"
 	
 on right click:
 	if line 1 of block in front of clicked block is "[Private]" or "[private]":
-		set {addon.Lock-IT} to value "Options.Addons.Lock-IT" get of "plugins/EssentialsSkript/config.yml"
+		set {addon.Lock-IT} to value "Options.Addons.Lock-IT" get of "plugins/DEssentials/config.yml"
 		if {addon.Lock-IT} is false:
 			stop
 		else:
