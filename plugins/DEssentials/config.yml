@@ -1,0 +1,27 @@
+Options:
+  Chat:
+    CensoringEnabled: 'true'
+    AntiSwear: 'true'
+  Other:
+    RocketLength: '6'
+    FireBallSpeed: '2'
+  Economy:
+    Enabled: 'true'
+  pluginblock: 'false'
+  firstjoinmessage: 'true'
+  mail: 'true'
+  prefix: §6§lDEssentials
+  Signs:
+    Repair: 'true'
+    Spawn: 'true'
+    Balance: 'true'
+    Heal: 'true'
+    Feed: 'true'
+    Warp: 'true'
+    Day: 'true'
+    Night: 'true'
+    Sunny: 'true'
+    Storm: 'true'
+  Addons:
+    Lock-IT: 'true'
+    VaultSK: 'true'
