@@ -390,6 +390,7 @@ command /tpahere <player>:
 		stop
 		
 command /tpaccept:
+	permission: dessentials.tpaccept
 	trigger:
 		if {essentials.tpa.%player%} is not "0":
 			teleport {essentials.tpa.%player%} to location of player
@@ -405,7 +406,7 @@ command /tpaccept:
 
 command /sethome:
 	description: Set your home
-	permission: dessentials.home
+	permission: dessentials.sethome
 	executable by: players
 	trigger:
 		set {homes.%player%.location} to location of player
@@ -474,7 +475,7 @@ command /tphere <player>:
 			stop
 			
 command /near [<integer = 10>]:
-	usage: dessentials.nearr
+	usage: dessentials.near
 	trigger:
 		add player to {EssSlnear::list}
 		loop players in radius argument 1 of the player:
@@ -679,7 +680,7 @@ command /burn <player> <timespan>:
 		stop
 
 command /extinguish <player>:
-	permission: dessentials.burn
+	permission: dessentials.extinguish
 	trigger:
 		extinguish the arg player
 		stop
@@ -776,7 +777,7 @@ command /skull <text>:
 command /Speed <text>:
 	description: Gives player a speed boost
 	usage: /Speed <test>
-	permission: Player.Speed
+	permission: dessentials.playerspeed
 	trigger:
 		if block below player is not air:
 			if argument 1 isn't set:
@@ -898,7 +899,7 @@ command /delkit <text>:
 			stop
 			
 command /God:
-	permission: dessentials.God
+	permission: dessentials.god
 	trigger:
 		if {god.enabled.%player%} = 0:
 			message "&cGod Mode Enabled"
@@ -1089,6 +1090,12 @@ command /afk:
 			broadcast "&7[%{essPrefix}%&7] &c%player% &7is now AFK"
 			stop
 
+on any movement:
+	if {essentials.%player%.afk} is true:
+		set {essentials.%player%.afk} to false
+		broadcast "&7[%{essPrefix}%&7] &c%player% &7is not longer AFK"
+		stop
+
 command /i <item> [<integer>]:
 	aliases: /item
 	usage: /i [item] (amount)
@@ -1116,7 +1123,7 @@ command /repair:
 				
 command /mail [<text=info>] [<integer>] [<offlineplayer>] [<text>]:
 	description: Write some mail
-	permission: dessentials.Mail
+	permission: dessentials.mail
 	trigger:
 		if {mail.on} is true:
 			if argument 1 is "info" or "help":
@@ -1227,7 +1234,7 @@ command /freeze <player> <timespan>:
 		stop
 
 command /unfreeze <player> :
-	permission: dessentials.freeze
+	permission: dessentials.unfreeze
 	trigger:
 		remove slowness from argument
 		remove mining fatigue from argument
@@ -1285,7 +1292,7 @@ command /invsee <offlineplayer>:
 
 command /endsee <offlineplayer>:
 	usage: /invsee <player>
-	permission: dessentials.invsee
+	permission: dessentials.endersee
 	trigger:
 		open the arg-1's ender chest for the player
 		stop
@@ -1323,26 +1330,26 @@ command /heal:
 		stop
 		
 command /gms [<player=%player%>]:
-	permission: dessentials.gms
+	permission: dessentials.gamemode.survival
 	trigger:
 		set gamemode of player argument to survival
 		message "&eYou have set %player argument%'s gamemode to survival" to player
 		stop
 		
 command /gmc [<player=%player%>]:
-	permission: dessentials.gmc	
+	permission: dessentials.gamemode.creative
 	trigger:
 		set gamemode of player argument to creative
 		message "&eYou have set %player argument%'s gamemode to creative" to player
 		stop
 
-command /Broadcast [<text>]:
+command /broadcast [<text>]:
 	aliases: bc
-	permission: dessentials.bc
+	permission: dessentials.broadcast
 	permission message: &cNo Permission!.
 	trigger:
 		if arg 1 is not set:
-			send "&3Problema &cUse: /broadcast(message)" to player
+			send "&3Problem &cUse: /broadcast(message)" to player
 			stop
 		if arg 1 is set:
 			broadcast "&8[&4Broadcast&8] &f&l%arg-1%"
@@ -1501,7 +1508,7 @@ command /me <text>:
 		
 command /clearchat:
 	aliases: cc
-	permission: dessentials.cc
+	permission: dessentials.clearchat
 	permission message: &c&l&cYou do not have permission to clear chat!
 	trigger:
 		loop 100 times:
@@ -1536,7 +1543,7 @@ on join:
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^#
 command /colorchat [<text>]:
 	aliases: /color
-	permission: colorchat.color
+	permission: dessentials.colorchat
 	trigger:
 		if arg 1 is "colors":
 			message " &cRed, &eYellow, &bBlue, &aGreen, &F&LClear" to player
@@ -1591,104 +1598,128 @@ command /colorchat [<text>]:
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^#
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^#
 on sign change:
-	if player has permission "dessentials.create":
+	if player has permission "dessentials.sign.create":
 		if line 1 is "[dessentials]":
 			if line 3 is "Sunny":
+				if player has permission "dessentials.sign.create.sunny":
 				set {_Option.spawnSign} to value "Options.Signs.Sunny" get of "plugins/DEssentials/config.yml"
 				if {_Option.spawnSign} is "true":
 					set line 1 to "&7[&6&ldessentials&7]"
 					set line 3 to "&8&lSunny"
 					stop
 			if line 3 is "Storm":
+				if player has permission "dessentials.sign.create.storm":
 				set {_Option.spawnSign} to value "Options.Signs.Storm" get of "plugins/DEssentials/config.yml"
 				if {_Option.spawnSign} is "true":
 					set line 1 to "&7[&6&ldessentials&7]"
 					set line 3 to "&8&lStorm"
 					stop
 			if line 3 is "Night":
+				if player has permission "dessentials.sign.create.night":
 				set {_Option.spawnSign} to value "Options.Signs.Night" get of "plugins/DEssentials/config.yml"
 				if {_Option.spawnSign} is "true":
 					set line 1 to "&7[&6&ldessentials&7]"
 					set line 3 to "&8&lNight"
 					stop
 			if line 3 is "Day":
+				if player has permission "dessentials.sign.create.day":
 				set {_Option.spawnSign} to value "Options.Signs.Day" get of "plugins/DEssentials/config.yml"
 				if {_Option.spawnSign} is "true":
 					set line 1 to "&7[&6&ldessentials&7]"
 					set line 3 to "&8&lDay"
 					stop
 			if line 3 is "Spawn":
+				if player has permission "dessentials.sign.create.spawn":
 				set {_Option.spawnSign} to value "Options.Signs.Spawn" get of "plugins/DEssentials/config.yml"
 				if {_Option.spawnSign} is "true":
 					set line 1 to "&7[&6&ldessentials&7]"
 					set line 3 to "&8&lSpawn"
 					stop
 			if line 3 is "Repair":
+				if player has permission "dessentials.sign.create.repair":
 				set {_Option.repairSign} to value "Options.Signs.Repair" get of "plugins/DEssentials/config.yml"
 				if {_Option.repairSign} is "true":
 					set line 1 to "&7[&6&ldessentials&7]"
 					set line 3 to "&8&lRepair"
 					stop
 			if line 3 is "Warp":
+				if player has permission "dessentials.sign.create.warp":
 				set {_Option.warpSign} to value "Options.Signs.Warp" get of "plugins/DEssentials/config.yml"
 				if {_Option.warpSign} is "true":
 					set line 1 to "&7[&6&ldessentials&7]"
 					set line 3 to "&8&lWarp"
 					stop
 			if line 3 is "Balance":
+				if player has permission "dessentials.sign.create.balance":
 				set {_Option.balanceSign} to value "Options.Signs.Balance" get of "plugins/DEssentials/config.yml"
 				if {_Option.balanceSign} is "true":
 					set line 1 to "&7[&6&ldessentials&7]"
 					set line 3 to "&8&lBalance"
 					stop
 			if line 3 is "Feed":
+				if player has permission "dessentials.sign.create.feed":
 				set {_Option.feedSign} to value "Options.Signs.Feed" get of "plugins/DEssentials/config.yml"
 				if {_Option.feedSign} is "true":
 					set line 1 to "&7[&6&ldessentials&7]"
 					set line 3 to "&8&lFeed"
 					stop
 			if line 3 is "Heal":
+				if player has permission "dessentials.sign.create.heal":
 				set {_Option.healSign} to value "Options.Signs.Heal" get of "plugins/DEssentials/config.yml"
 				if {_Option.healSign} is "true":
 					set line 1 to "&7[&6&ldessentials&7]"
 					set line 3 to "&8&lHeal"
 					stop
+			else:
+				send "%{essPrefix}% &cYou can't create that sign!"
 		
 on rightclick:
 	block is sign
-	if player has permission "dessentials.signuse":
+	if player has permission "dessentials.sign.use":
 		if line 1 is "&7[&6&ldessentials&7]":
 			if line 3 is "&8&lSunny":
+				if player has permission "dessentials.sign.use.weather":
 				execute player command "/weather clear"
 				stop
 			if line 3 is "&8&lStorm":
+				if player has permission "dessentials.sign.use.weather":
 				execute player command "/weather rain"
 				stop
 			if line 3 is "&8&lNight":
+				if player has permission "dessentials.sign.use.night":
 				execute player command "/night"
 				stop
 			if line 3 is "&8&lDay":
+				if player has permission "dessentials.sign.use.day":
 				execute player command "/day"
 				stop
 			if line 3 is "&8&lSpawn":
+				if player has permission "dessentials.sign.use.spawn":
 				execute player command "/spawn"
 				stop
 			if line 3 is "&8&lRepair":
+				if player has permission "dessentials.sign.use.repair":
 				execute player command "/repair"
 				stop
 			if line 3 is "&8&lWarp":
+				if player has permission "dessentials.sign.use.warp":
 				set {_warp} to line 4 of clicked block
 				execute player command "/warp %{_warp}%"
 				stop
 			if line 3 is "&8&lBalance":
+				if player has permission "dessentials.sign.use.balance":
 				execute player command "/bal"
 				stop
 			if line 3 is "&8&lFeed":
+				if player has permission "dessentials.sign.use.feed":
 				execute player command "/feed"
 				stop
 			if line 3 is "&8&lHeal":
+				if player has permission "dessentials.sign.use.heal":
 				execute player command "/heal"
 				stop
+			else:
+				send "%{essPrefix}% &cYou can't use that sign!"
 
 				
 				
@@ -1697,7 +1728,7 @@ on rightclick:
 #Plugin Commands<---------------#
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^#
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^#
-command /infodessentials:
+command /infoddessentials:
 	description: Info
 	trigger:
 		message ""
@@ -1707,7 +1738,7 @@ command /infodessentials:
 		message "&c&l--------------------------------------------------------------------------"
 		stop
 		
-command /EssentialsReload:
+command /DEssentialsReload:
 	description: Reload the plugin
 	permission: dessentials.reload
 	trigger:
@@ -1720,7 +1751,7 @@ on join:
 	make player execute command "infodessentials"
 	stop
 	
-command /essentialskript <text>:
+command /dessentials <text>:
 	aliases: dessentials
 	trigger:
 		if arg 1 is "1":
